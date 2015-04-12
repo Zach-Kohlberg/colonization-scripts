@@ -3,10 +3,14 @@ using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
-public class Worker : Unit {
+public class Farm : Building {
     
-    private void Awake() {
-        UnitInit();
+    //Public properties for inspector
+    public float foodPerTick;
+    
+	private void Awake() {
+		BuildingInit();
+        
     }
     
     private void Start() {

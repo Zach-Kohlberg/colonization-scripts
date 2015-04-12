@@ -5,15 +5,19 @@ using System.Collections.Generic;
 
 public class Building : MapObject {
     
-    private void Awake() {
-        
-    }
+    //Inspector fields
     
-    private void Start() {
-        
-    }
+    //Private fields
+	protected bool on;
+	
+	//Public Properties
+	public bool On { 
+    	get { return on; }
+    	set { on = value; }
+	}
     
-    private void Update() {
-        
+    //Base init method
+    protected void BuildingInit() {
+    	on = false;
     }
 }

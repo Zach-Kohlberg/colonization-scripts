@@ -22,16 +22,4 @@ public class MapObject : MonoBehaviour {
 		get { return transform.position; }
 		set { transform.position = value; }
 	}
-    
-    private void Awake() {
-        
-    }
-    
-    private void Start() {
-        
-    }
-    
-    private void Update() {
-        
-    }
 }

@@ -5,8 +5,8 @@ using System.Collections.Generic;
 
 public class Factory : Building {
     
-    private void Awake() {
-        
+    private override void Awake() {
+        BuildingInit();
     }
     
     private void Start() {

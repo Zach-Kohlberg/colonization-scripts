@@ -5,15 +5,30 @@ using System.Collections.Generic;
 
 public class Unit : MapObject {
     
-    private void Awake() {
-        
-    }
+    //Inspector fields
+    public float unitSpeed, maxUnitHealth;
     
-    private void Start() {
-        
-    }
+    //Private fields
+    protected float speed, health, maxHealth;
     
-    private void Update() {
-        
+    //Public properties
+    public float Speed {
+    	get { return speed; }
+    	private set { speed = value; }
+	}
+	public float Health {
+		get { return health; }
+		private set { health = value; }
+	}
+	public float MaxHealth {
+		get { return maxHealth; }
+		private set { maxHealth = value; }
+	}
+    
+    //Base init method
+    protected void UnitInit() {
+    	speed = unitSpeed;
+    	maxHealth = maxUnitHealth;
+    	health = maxHealth;
     }
 }

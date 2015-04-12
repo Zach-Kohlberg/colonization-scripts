@@ -3,10 +3,11 @@ using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
-public class Worker : Unit {
+public class PowerPlant : Building {
     
-    private void Awake() {
-        UnitInit();
+	private void Awake() {
+		BuildingInit();
+        
     }
     
     private void Start() {
