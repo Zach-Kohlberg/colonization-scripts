@@ -5,6 +5,13 @@ using System.Collections.Generic;
 
 public class Factory : Building {
     
+    //Inspector fields
+    public GameObject[] unitPrefabs;
+    
+    //Private fields
+    
+    //Public properties
+    
     private override void Awake() {
         BuildingInit();
     }
