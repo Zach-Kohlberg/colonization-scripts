@@ -18,12 +18,13 @@ public class PowerPlant : Building {
 	}
 	
 	private void Awake() {
-		BuildingInit();
         PowerPlantInit();
     }
     
-    private void PowerPlantInit() {
+	private void PowerPlantInit() {
+		BuildingInit();
     	powerRate = powerPerTick;
+    	tag = "PowerPlant";
     }
     
     private void Start() {

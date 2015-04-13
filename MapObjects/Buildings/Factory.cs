@@ -9,11 +9,22 @@ public class Factory : Building {
     public GameObject[] unitPrefabs;
     
     //Private fields
+    private Vector2 spawn;
     
     //Public properties
+    public Vector2 Spawn {
+    	get { return spawn; }
+    	set { spawn = value; }
+    }
     
-    private override void Awake() {
-        BuildingInit();
+    private void Awake() {
+    	FactoryInit();
+    }
+    
+	private void FactoryInit() {
+		BuildingInit();
+    	tag = "Factory";
+    	spawn = position;
     }
     
     private void Start() {

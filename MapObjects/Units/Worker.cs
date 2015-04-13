@@ -22,20 +22,36 @@ public class Worker : Unit {
 	}
     
     private void Awake() {
-        UnitInit();
         WorkerInit();
     }
     
-    private void WorkerInit() {
+	private void WorkerInit() {
+		UnitInit();
     	mass = 0;
     	maxMass = unitCapacity;
+    	tag = "Worker";
     }
     
-    private void Start() {
-        
+    private bool Move() {
+    	if (Vector2.Distance(position,targetPosition) <= speed) {
+    		position = targetPosition;
+    		return false;
+    	}
+    	else {
+    		position += (Vector3)Vector2.ClampMagnitude(targetPosition - (Vector2)position,speed);
+    		return true;
+    	}
+    }
+    
+    private void PerformTask() {
+    	if (task == "move") {
+    		if (!Move()) {
+    			task = "none";
+    		}
+    	}
     }
     
     private void Update() {
-        
+        PerformTask();
     }
 }

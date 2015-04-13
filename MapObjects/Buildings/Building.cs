@@ -18,6 +18,7 @@ public class Building : MapObject {
     
     //Base init method
     protected void BuildingInit() {
-    	on = false;
+		on = false;
+		z = 0;
     }
 }

@@ -23,13 +23,14 @@ public class Beacon : Building {
 	}
 	
 	private void Awake() {
-		BuildingInit();
         BeaconInit();
     }
     
-    private void BeaconInit() {
+	private void BeaconInit() {
+		BuildingInit();
     	radius = beaconRadius;
     	powerRate = powerPerTick;
+    	tag = "Beacon";
     }
     
     private void Start() {

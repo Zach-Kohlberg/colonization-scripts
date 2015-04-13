@@ -25,5 +25,6 @@ public class Resource : MapObject {
     protected void ResourceInit() {
     	current = Mathf.Min(initialResource,maxResource);
     	max = maxResource;
+    	z = 0;
     }
 }

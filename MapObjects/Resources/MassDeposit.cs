@@ -6,7 +6,12 @@ using System.Collections.Generic;
 public class MassDeposit : Resource {
     
     private void Awake() {
-        ResourceInit();
+        MassDepositInit();
+    }
+    
+	private void MassDepositInit() {
+		ResourceInit();
+    	tag = "MassDeposit";
     }
     
     private void Start() {

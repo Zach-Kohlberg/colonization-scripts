@@ -18,12 +18,13 @@ public class Farm : Building {
     }
     
 	private void Awake() {
-		BuildingInit();
         FarmInit();
     }
     
-    private void FarmInit() {
+	private void FarmInit() {
+		BuildingInit();
     	foodRate = foodPerTick;
+    	tag = "Farm";
     }
     
     private void Start() {
