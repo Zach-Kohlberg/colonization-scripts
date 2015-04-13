@@ -27,6 +27,10 @@ public class Factory : Building {
     	spawn = position;
     }
     
+    public void DepositMass(int amount) {
+    	//Send mass to game manager
+    }
+    
     private void Start() {
         
     }

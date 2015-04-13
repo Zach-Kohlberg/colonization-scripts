@@ -24,6 +24,7 @@ public class TestGUI : MonoBehaviour {
 			Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 1000);
 			if (hit.transform != null) {
 				Vector2 mousePos = hit.point;
+				MapObject hitObject = hit.transform.GetComponent<MapObject>();
 				if (hit.transform.tag == "Ground") {
 					if (mouse == 0) {
 						selected = null;
@@ -40,11 +41,16 @@ public class TestGUI : MonoBehaviour {
 				else if (hit.transform.tag == "MapObject") {
 					Debug.Log("MapObject");
 					if (mouse == 0) {
-						selected = hit.transform.GetComponent<MapObject>();
+						selected = hitObject;
 					}
 					else if (mouse == 1) {
 						if (selected.Tag == "Worker") {
-							(selected as Worker).SetTask("move", hit.transform.GetComponent<MapObject>());
+							if (hitObject.Tag == "Factory") {
+								(selected as Worker).SetTask("deposit", hitObject);
+							}
+							else if (hitObject.Tag == "MassDeposit") {
+								(selected as Worker).SetTask("mine", hitObject);
+							}
 						}
 					}
 				}

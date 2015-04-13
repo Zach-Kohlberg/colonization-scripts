@@ -6,17 +6,17 @@ using System.Collections.Generic;
 public class Resource : MapObject {
 	
 	//Inspector fields
-	public float maxResource, initialResource;
+	public int maxResource, initialResource;
 	
 	//Private fields
-	protected float current, max;
+	protected int current, max;
 	
 	//Public properties
-	public float Max {
+	public int Max {
 		get { return max; }
 		private set { max = value; }
 	}
-	public float Current {
+	public int Current {
 		get { return current; }
 		private set { current = value; }
 	}

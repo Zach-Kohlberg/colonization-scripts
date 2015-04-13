@@ -35,21 +35,21 @@ public class MapObject : MonoBehaviour {
 		set { transform.position = value; }
 	}
 	
-	//Public method making it easy to determine which type of object this is
+	//Public method making it easy to determine which type of object this is, in case that matters at some point
 	public string TagType() {
 		foreach (string s in resources) {
 			if (s == tag) {
-				return "resource";
+				return "Resource";
 			}
 		}
 		foreach (string s in units) {
 			if (s == tag) {
-				return "unit";
+				return "Unit";
 			}
 		}
 		foreach (string s in buildings) {
 			if (s == tag) {
-				return "building";
+				return "Building";
 			}
 		}
 		return "none";

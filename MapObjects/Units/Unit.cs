@@ -57,12 +57,24 @@ public class Unit : MapObject {
     public void SetTask(string t, MapObject tO) {
     	task = t;
     	targetObject = tO;
-		Vector2 pos = targetObject.position - position;
-		targetPosition = (Vector2)position + Vector2.ClampMagnitude(pos,pos.magnitude-0.5f);
+		targetPosition = NextTo(targetObject);
+		TaskSet();
     }
 	public void SetTask(string t, Vector2 tP) {
     	task = t;
     	targetObject = null;
     	targetPosition = tP;
+    	TaskSet();
+    }
+    
+    //Method for getting a point next to another map object
+    protected Vector2 NextTo(MapObject m) {
+		Vector2 pos = m.position - position;
+		return (Vector2)position + Vector2.ClampMagnitude(pos,pos.magnitude-0.5f);
+    }
+    
+    //Unit-specific reaction to being given a task
+    protected virtual void TaskSet() {
+    	//Do nothing, this is a generic unit
     }
 }

@@ -14,6 +14,18 @@ public class MassDeposit : Resource {
     	tag = "MassDeposit";
     }
     
+	public int Mine(int amount) {
+    	if (current > amount) {
+    		current -= amount;
+    		return amount;
+    	}
+    	else {
+			int c = current;
+    		current = 0;
+    		return c;
+    	}
+    }
+    
     private void Start() {
         
     }
