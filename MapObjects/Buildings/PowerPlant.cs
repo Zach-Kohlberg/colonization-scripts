@@ -1,18 +1,20 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 using System.Collections;
-using System.Collections.Generic;
 
 public class PowerPlant : Building {
 	
 	//Inspector fields
-	public float powerPerTick;
+	public int massPerTick, powerPerTick;
 	
 	//Private fields
-	private float powerRate;
+	private int massRate, powerRate;
 	
 	//Public properties
-	public float PowerRate {
+	public int MassRate {
+		get { return massRate; }
+		private set { massRate = value; }
+	}
+	public int PowerRate {
 		get { return powerRate; }
 		private set { powerRate = value; }
 	}
@@ -23,15 +25,15 @@ public class PowerPlant : Building {
     
 	private void PowerPlantInit() {
 		BuildingInit();
-    	powerRate = powerPerTick;
+		powerRate = powerPerTick;
+		massRate = massPerTick;
     	tag = "PowerPlant";
     }
     
-    private void Start() {
-        
-    }
-    
     private void Update() {
-        
+		if (on) {
+			//**Take mass from game manager if possible
+			//**If given mass, generate power for the game manager
+		}
     }
 }

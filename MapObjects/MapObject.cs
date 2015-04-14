@@ -1,7 +1,5 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 using System.Collections;
-using System.Collections.Generic;
 
 public class MapObject : MonoBehaviour {
 	
@@ -10,14 +8,17 @@ public class MapObject : MonoBehaviour {
 	
 	//Private fields
 	new protected string tag;
+	protected bool on;
 	
 	//Public properties
 	public string Tag {
 		get { return tag; }
 		private set { tag = value; }
 	}
-	
-	//Public properties allow easier access/modification of this object's location
+	public bool On {
+		get { return on; }
+		set { on = value; }
+	}
 	public float x {
 		get { return transform.position.x; }
 		set { transform.position = new Vector3(value, transform.position.y, transform.position.z); }
@@ -33,6 +34,12 @@ public class MapObject : MonoBehaviour {
 	public Vector3 position {
 		get { return transform.position; }
 		set { transform.position = value; }
+	}
+	
+	//Base init method for map objects
+	protected void MapObjectInit() {
+		on = true;
+		z = 0;
 	}
 	
 	//Public method making it easy to determine which type of object this is, in case that matters at some point

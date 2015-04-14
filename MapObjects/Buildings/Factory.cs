@@ -1,12 +1,9 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 using System.Collections;
-using System.Collections.Generic;
 
 public class Factory : Building {
     
     //Inspector fields
-    public GameObject[] unitPrefabs;
     
     //Private fields
     private Vector2 spawn;
@@ -24,18 +21,17 @@ public class Factory : Building {
 	private void FactoryInit() {
 		BuildingInit();
     	tag = "Factory";
-    	spawn = position;
+    	spawn = position + new Vector3(1,0,0);
     }
     
     public void DepositMass(int amount) {
-    	//Send mass to game manager
+    	//**Send mass to game manager
     }
     
-    private void Start() {
-        
-    }
-    
-    private void Update() {
-        
+    public void SpawnUnit(GameObject unit) {
+    	//**Ask game manager about cost for unit, pay cost
+    	Unit u = (Instantiate(unit) as GameObject).GetComponent<Unit>();
+    	u.position = position;
+    	u.SetTask("move", spawn);
     }
 }

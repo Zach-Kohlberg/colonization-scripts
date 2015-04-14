@@ -1,7 +1,5 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 using System.Collections;
-using System.Collections.Generic;
 
 public class Unit : MapObject {
     
@@ -50,14 +48,15 @@ public class Unit : MapObject {
     	targetObject = null;
     	targetPosition = new Vector2(x,y);
 		task = "none";
-		z = 0;
+		
+		MapObjectInit();
     }
     
     //Methods for directing units
     public void SetTask(string t, MapObject tO) {
     	task = t;
     	targetObject = tO;
-		targetPosition = NextTo(targetObject);
+		targetPosition = NextTo(targetObject.position);
 		TaskSet();
     }
 	public void SetTask(string t, Vector2 tP) {
@@ -68,8 +67,8 @@ public class Unit : MapObject {
     }
     
     //Method for getting a point next to another map object
-    protected Vector2 NextTo(MapObject m) {
-		Vector2 pos = m.position - position;
+    protected Vector2 NextTo(Vector3 v) {
+		Vector2 pos = v - position;
 		return (Vector2)position + Vector2.ClampMagnitude(pos,pos.magnitude-0.5f);
     }
     

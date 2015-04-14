@@ -1,18 +1,20 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 using System.Collections;
-using System.Collections.Generic;
 
 public class Farm : Building {
     
     //Public properties for inspector
-    public float foodPerTick;
+	public int massPerTick, foodPerTick;
     
     //Private fields
-    private float foodRate;
+	private int massRate, foodRate;
     
-    //Public properties
-    public float FoodRate {
+	//Public properties
+	public int MassRate {
+		get { return massRate; }
+		private set { massRate = value; }
+	}
+	public int FoodRate {
     	get { return foodRate; }
     	private set { foodRate = value; }
     }
@@ -23,15 +25,13 @@ public class Farm : Building {
     
 	private void FarmInit() {
 		BuildingInit();
-    	foodRate = foodPerTick;
+		foodRate = foodPerTick;
+		massRate = massPerTick;
     	tag = "Farm";
     }
     
-    private void Start() {
-        
-    }
-    
     private void Update() {
-        
+		//**Take mass from game manager if possible
+		//**If given mass, generate food for the game manager
     }
 }

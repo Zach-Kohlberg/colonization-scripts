@@ -1,7 +1,5 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 using System.Collections;
-using System.Collections.Generic;
 
 public class Resource : MapObject {
 	
@@ -25,6 +23,7 @@ public class Resource : MapObject {
     protected void ResourceInit() {
     	current = Mathf.Min(initialResource,maxResource);
     	max = maxResource;
-    	z = 0;
+    	
+		MapObjectInit();
     }
 }
