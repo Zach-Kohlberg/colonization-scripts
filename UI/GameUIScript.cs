@@ -86,7 +86,7 @@ public class GameUIScript : MonoBehaviour {
     private void CameraMovement()
     {
         float x = Input.GetAxis("Horizontal"), y = Input.GetAxis("Vertical"); Vector3 forward = Camera.main.transform.position;
-        cam.transform.position += new Vector3(x, 0, y) * panSpeed;
+        cam.transform.position += new Vector3(x, y, 0) * panSpeed;
     }
 
     /// <summary>
