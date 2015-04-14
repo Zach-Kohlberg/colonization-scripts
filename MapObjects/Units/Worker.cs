@@ -68,7 +68,6 @@ public class Worker : Unit {
 		GameObject[] go = GameObject.FindGameObjectsWithTag("MapObject");
 		foreach (GameObject g in go) {
 			MapObject m = g.GetComponent<MapObject>();
-			Debug.Log(m.Tag);
 			if (m.Tag == "Factory") {
 				if (f == null || Vector2.Distance(position,m.position) < Vector2.Distance(position,f.position)) {
 					f = m as Factory;
@@ -127,8 +126,9 @@ public class Worker : Unit {
     	else if (task == "build") {
     		if (!MoveNextTo()) {
     			//**Ensure that we can build this, check with game manager and subtract cost of the building
-    			Building b = (Instantiate(buildingPrefab) as GameObject).GetComponent<Building>();
+    			Building b = (Instantiate(buildingPrefab, position, transform.rotation) as GameObject).GetComponent<Building>();
     			b.position = targetPosition;
+    			SetTask("none", position);
     		}
     	}
     }

@@ -5,6 +5,8 @@ using System.Collections.Generic;
 
 public class TestGUI : MonoBehaviour {
     
+    public GameObject workerPrefab, factoryPrefab;
+    
     private MapObject selected;
     
     private void Awake() {
@@ -31,15 +33,24 @@ public class TestGUI : MonoBehaviour {
 					}
 					else if (mouse == 1 && selected != null) {
 						if (selected.Tag == "Worker") {
-							(selected as Worker).SetTask("move", mousePos);
+							if (Input.GetKey(KeyCode.LeftControl)) {
+								(selected as Worker).Build(factoryPrefab, mousePos);
+							}
+							else {
+								(selected as Worker).SetTask("move", mousePos);
+							}
 						}
 						else if (selected.Tag == "Factory") {
-							(selected as Factory).Spawn = mousePos;
+							if (Input.GetKey(KeyCode.LeftControl)) {
+								(selected as Factory).SpawnUnit(workerPrefab);
+							}
+							else {
+								(selected as Factory).Spawn = mousePos;
+							}
 						}
 					}
 				}
 				else if (hit.transform.tag == "MapObject") {
-					Debug.Log("MapObject");
 					if (mouse == 0) {
 						selected = hitObject;
 					}
