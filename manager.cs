@@ -15,7 +15,20 @@ public class manager : MonoBehaviour {
 	void Update () {
 	
 	}
+	void addMass(int n) {
+		setMass (getMass + n);
+	}
 
+	int spendMass(int n) {
+		if (getMass - n > 0) {
+			setMass(getMass-n);
+			return n;
+		}
+
+		else if (getMass - n <=0) {
+			return 0;
+		}
+	}
 	//getters
 	public int getFood() {
 		return food;
