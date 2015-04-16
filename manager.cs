@@ -16,16 +16,16 @@ public class manager : MonoBehaviour {
 	
 	}
 	void addMass(int n) {
-		setMass (getMass + n);
+		setMass (getMass() + n);
 	}
 
 	int spendMass(int n) {
-		if (getMass - n > 0) {
-			setMass(getMass-n);
+		if (getMass() - n > 0) {
+			setMass(getMass() -n);
 			return n;
 		}
 
-		else if (getMass - n <=0) {
+		else  {
 			return 0;
 		}
 	}
