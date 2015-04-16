@@ -16,7 +16,6 @@ public class Beacon : Building {
 		get { return radius; }
 		private set { radius = value; }
 	}
-	
 	public int PowerRate {
 		get { return powerRate; }
 		private set { powerRate = value; }
