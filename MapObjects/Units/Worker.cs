@@ -95,7 +95,7 @@ public class Worker : Unit {
     		}
     	}
     	else if (task == "mine") {
-    		if ((targetObject as MassDeposit).Current == 0) {
+			if (targetObject == null || (targetObject as MassDeposit).Current == 0) {
     			if (mass > 0) {
     				SetTask("deposit", NearestFactory());
     			}
@@ -111,15 +111,28 @@ public class Worker : Unit {
     		}
     	}
     	else if (task == "mine-deposit") {
-    		if (!Move()) {
+			if (deposit == null) {
+				SetTask("none", position);
+			}
+    		else if (!Move()) {
 				(deposit as Factory).DepositMass(mass);
+				mass = 0;
 				task = "mine";
-				targetPosition = NextTo(targetObject.position);
+				if (targetObject == null) {
+					SetTask("none", position);
+				}
+				else {
+					targetPosition = NextTo(targetObject.position);
+				}
     		}
     	}
     	else if (task == "deposit") {
-			if (!Move()) {
+			if (targetObject == null) {
+				SetTask("none", position);
+			}
+			else if (!Move()) {
 				(targetObject as Factory).DepositMass(mass);
+				mass = 0;
 				SetTask("none", position);
     		}
     	}
@@ -133,14 +146,12 @@ public class Worker : Unit {
     	}
     }
     
-    
-    
     private void Update() {
     	if (on) {
         	PerformTask();
         }
         if (Time.time > lastAte + 1) {
-        	//Eat food from game manager or die
+        	//**Eat food from game manager or die
         	lastAte++;
         }
     }

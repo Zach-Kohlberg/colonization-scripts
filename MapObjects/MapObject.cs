@@ -61,4 +61,10 @@ public class MapObject : MonoBehaviour {
 		}
 		return "none";
 	}
+	
+	//Destroy this map object and inform the manager
+	public virtual void Kill() {
+		//**Inform the manager that I'm dead
+		Destroy(gameObject);
+	}
 }
