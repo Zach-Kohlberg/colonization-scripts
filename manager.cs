@@ -15,8 +15,8 @@ public class Manager : MonoBehaviour {
 		
 	}
 	
-	//Return the cost to create a specific building
-	public int GetCost(string building) {
+	//Return the cost to create a specific unit or building
+	public int GetCost(string obj) {
 		return 100;
 	}
 	

@@ -10,7 +10,7 @@ public class Worker : Unit {
 	private int mass, maxMass, foodRate;
 	private Factory deposit;
 	private GameObject buildingPrefab;
-	private float lastAte;
+	private float lastTick;
 	
 	//Public properties
 	public int Mass {
@@ -38,7 +38,7 @@ public class Worker : Unit {
     	tag = "Worker";
     	deposit = null;
     	buildingPrefab = null;
-    	lastAte = Time.time;
+		lastTick = Time.time;
     }
     
     private bool Move() {
@@ -152,13 +152,13 @@ public class Worker : Unit {
     
     private void Update() {
     	if (on) {
-        	PerformTask();
-        }
-        if (Time.time > lastAte + 1) {
-        	if (manager.SpendFood(foodRate) == 0) {
-        		Kill();
-        	}
-        	lastAte++;
+			PerformTask();
+			if (Time.time > lastTick + 1) {
+				if (manager.SpendFood(foodRate) == 0) {
+					Kill();
+				}
+				lastTick++;
+			}
         }
     }
 }

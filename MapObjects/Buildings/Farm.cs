@@ -8,6 +8,7 @@ public class Farm : Building {
     
     //Private fields
 	private int massRate, foodRate;
+	private float lastTick;
     
 	//Public properties
 	public int MassRate {
@@ -28,10 +29,17 @@ public class Farm : Building {
 		foodRate = foodPerTick;
 		massRate = massPerTick;
     	tag = "Farm";
+    	lastTick = Time.time;
     }
     
     private void Update() {
-		//**Take mass from game manager if possible
-		//**If given mass, generate food for the game manager
+		if (on) {
+			if (Time.time > lastTick + 1) {
+				if (manager.SpendMass(massRate) > 0) {
+					manager.AddFood(foodRate);
+				}
+				lastTick++;
+			}
+		}
     }
 }
