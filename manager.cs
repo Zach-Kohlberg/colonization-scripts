@@ -2,30 +2,62 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class manager : MonoBehaviour {
-	private int food = 0, mass =0, beacons =0, factories =0, farms =0, workers =0, workerBuildLevel = 1, workerGatherLevel = 1;
+public class Manager : MonoBehaviour {
+	private int food = 0, mass = 0, power = 0, beacons =0, factories =0, farms =0, workers =0, workerBuildLevel = 1, workerGatherLevel = 1;
 	private List<GameObject> workersList, beaconsList, factoriesList, farmsList;
 	// Use this for initialization
 	void Start () {
-
-	
+		
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		
+	}
 	
+	//Return the cost to create a specific building
+	public int GetCost(string building) {
+		return 100;
 	}
-	void addMass(int n) {
-		setMass (getMass() + n);
+	
+	public void AddMass(int n) {
+		mass += n;
 	}
-
-	int spendMass(int n) {
-		if (getMass() - n > 0) {
-			setMass(getMass() -n);
+	
+	public void AddFood(int n) {
+		food += n;
+	}
+	
+	public void AddPower(int n) {
+		power += n;
+	}
+	
+	public int SpendMass(int n) {
+		if (mass >= n) {
+			mass -= n;
 			return n;
 		}
-
-		else  {
+		else {
+			return 0;
+		}
+	}
+	
+	public int SpendFood(int n) {
+		if (food >= n) {
+			food -= n;
+			return n;
+		}
+		else {
+			return 0;
+		}
+	}
+	
+	public int SpendPower(int n) {
+		if (power >= n) {
+			power -= n;
+			return n;
+		}
+		else {
 			return 0;
 		}
 	}

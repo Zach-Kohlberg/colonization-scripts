@@ -9,6 +9,7 @@ public class MapObject : MonoBehaviour {
 	//Private fields
 	new protected string tag;
 	protected bool on;
+	protected Manager manager;
 	
 	//Public properties
 	public string Tag {
@@ -40,6 +41,7 @@ public class MapObject : MonoBehaviour {
 	protected void MapObjectInit() {
 		on = true;
 		z = 0;
+		manager = GameObject.Find("Manager").GetComponent<Manager>();
 	}
 	
 	//Public method making it easy to determine which type of object this is, in case that matters at some point

@@ -138,10 +138,14 @@ public class Worker : Unit {
     	}
     	else if (task == "build") {
     		if (!MoveNextTo()) {
-    			//**Ensure that we can build this, check with game manager and subtract cost of the building
     			Building b = (Instantiate(buildingPrefab, position, transform.rotation) as GameObject).GetComponent<Building>();
-    			b.position = targetPosition;
-    			SetTask("none", position);
+    			if (manager.SpendMass(manager.GetCost(b.Tag)) != 0) {
+	    			b.position = targetPosition;
+	    			SetTask("none", position);
+    			}
+    			else {
+    				Destroy(b.gameObject);
+    			}
     		}
     	}
     }
@@ -151,7 +155,9 @@ public class Worker : Unit {
         	PerformTask();
         }
         if (Time.time > lastAte + 1) {
-        	//**Eat food from game manager or die
+        	if (manager.SpendFood(foodRate) == 0) {
+        		Kill();
+        	}
         	lastAte++;
         }
     }
