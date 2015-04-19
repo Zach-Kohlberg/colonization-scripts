@@ -5,45 +5,158 @@ using System.Collections.Generic;
 
 public class GameUIScript : MonoBehaviour {
 
-    public float panSpeed = 2f;
-    public Text selectedObjectName, header_Resource1Text, header_Resource2Text, header_Resource3Text;
-    private Camera cam;
-    private MapObject selected = null, selected_last = null, infin;//the most recently selected object
-    public GameObject selectedPanel, actionBar, selected_worker, selected_building, selected_resource, action_worker, action_Factory;
+    public string[] gameTags;//the tags that our objects use.
+    public float panSpeed = 2f;//how quickly should the camera move?
+    public Text selectedObjectNameType, header_Resource1Text, header_Resource2Text, header_Resource3Text;
+    public Image selectedImage;
+    public GameObject selectedPanel, actionBar, selected_worker, selected_Beacon, selected_Factory, selected_Farm, selected_PowerPlant, selected_ResourceDeposit, action_worker, action_Beacon, action_Factory, action_Farm, action_Powerplant;
+    
     private List<GameObject> selectedMapObjectPanels, selectedActionBar;
-    private bool uiClick = false;//this determines whether or not the person is clicking the Ui or the actual ground.
+    private Manager manager = null;
+    private bool workerMovement = false, uiClick = false;//this determines whether or not the person is clicking the Ui or the actual ground.
 
-    private bool workerMovement = false;
+    
+    private Camera cam;
+    private MapObject selected = null;//the most recently selected object
+    
+    private Dictionary<string, Sprite> selectedImages;
+    private bool insideUI = false, clickedUIActionButton = false;//is the player inside the UI? Did the player click a UI Action Button?
+    private MapObject currentMO;//the mo the player is currently entranced with.
 
     void Awake()
     {
         cam = Camera.main;
+        if (GameObject.Find("Manager") != null)
+        {
+            manager = GameObject.Find("Manager").GetComponent<Manager>();
+        }
     }
 
 
 	// Use this for initialization
 	void Start () {
+        LoadSelectedSprites();
+
+        Debug.Log("Selected Images has a size of: " + selectedImages.Count);
+
         actionBar.SetActive(false);
         selectedPanel.SetActive(false);
         selectedMapObjectPanels = new List<GameObject>();
         selectedActionBar = new List<GameObject>();
-        selectedMapObjectPanels.Add(selected_worker); selectedMapObjectPanels.Add(selected_building); selectedMapObjectPanels.Add(selected_resource);
-        selectedActionBar.Add(action_worker); selectedActionBar.Add(action_Factory);
+        selectedMapObjectPanels.Add(selected_worker); selectedMapObjectPanels.Add(selected_Beacon); selectedMapObjectPanels.Add(selected_Factory); selectedMapObjectPanels.Add(selected_Farm); selectedMapObjectPanels.Add(selected_PowerPlant); selectedMapObjectPanels.Add(selected_ResourceDeposit);
+        selectedActionBar.Add(action_Beacon); selectedActionBar.Add(action_Factory); selectedActionBar.Add(action_Farm); selectedActionBar.Add(action_Powerplant); selectedActionBar.Add(action_worker);  
 	}
 	
 	// Update is called once per frame
 	void Update () 
     {
-
+        if (manager != null)
+        {
+            header_Resource1Text.text = "Mass: " + manager.getMass();
+            header_Resource2Text.text = "Food: " + manager.getFood();
+            
+            //header_Resource3Text.text = "Eneger: " + manager.get
+        }
         CameraMovement();
-        ActionButtons();
-        
+        PlayerInteractions();
+        //ActionButtons();
+        //PlayerActions();
 	}
 
-    void LateUpdate()
+
+    /// <summary>
+    /// This will capture everything that the player does. Such as clicking on objects and what not.
+    /// </summary>
+    private void PlayerInteractions()
     {
-        PlayerActions();
+        
+
+        //if the player is not inside the UI, and has not clicked a UI button
+        if (!insideUI && !clickedUIActionButton)
+        {
+            int mouseClick = -1;
+            if (Input.GetMouseButton(0))
+            {
+                mouseClick = 0;
+            }
+            else if (Input.GetMouseButton(1))
+            {
+                mouseClick = 1;
+            }
+
+            //if the mouse was clicked
+            if (mouseClick > -1)
+            {
+                RaycastHit hit;
+                Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 1000);
+
+                //determine if an acceptable object was clicked on.
+                if (hit.transform != null)
+                {
+                    //get a reference to the hit object
+                    MapObject hitObject = hit.transform.GetComponent<MapObject>();
+                    if (hitObject != null)
+                    {
+                        # region //if the ground was hit
+                        if (hitObject.CompareTag("Ground"))
+                        {
+                            //if it was a left click, keep/make it null
+                            if (mouseClick == 0)
+                            {
+                                currentMO = null;
+                                //update the panel and actionbar.
+                                SelectedPanelUpdate();
+                            }
+                            // if it was a right click, determine what was going on.
+                            else if (mouseClick == 1 && currentMO != null)
+                            {
+                                if (currentMO.Tag == "Worker" || currentMO.Tag == "Factory")
+                                {
+                                    //get the location/position of the click
+                                    Vector2 position = hit.point;
+
+                                    if (currentMO.Tag == "Worker")
+                                    {
+                                        //tell the worker where to move to.
+                                        currentMO.GetComponent<Worker>().SetTask("move", position);
+                                    }
+
+                                    else if (currentMO.Tag == "Factory")
+                                    {
+                                        //set the spawn position of the factory
+                                        currentMO.GetComponent<Factory>().Spawn = position;
+                                    }
+                                }
+
+                            }
+                            
+
+                        }
+                        #endregion
+                        #region MassDeposit Clicked
+                        else if (hitObject.Tag == "MassDeposit")
+                        {
+
+                        }
+                        #endregion
+                    }
+                    
+                }
+            }
+
+        }
     }
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -64,16 +177,16 @@ public class GameUIScript : MonoBehaviour {
                     if (hit.transform.CompareTag("Ground"))
                     {
                         Vector2 mousePos = hit.point;
-                        (selected_last as Worker).SetTask("move", mousePos);
+                        (selected as Worker).SetTask("move", mousePos);
                     }
 
                     else if (hitObject.Tag == "Factory")
                     {
-                        (selected_last as Worker).SetTask("deposit", hitObject);
+                        (selected as Worker).SetTask("deposit", hitObject);
                     }
                     else if (hitObject.Tag == "MassDeposit")
                     {
-                        (selected_last as Worker).SetTask("mine", hitObject);
+                        (selected as Worker).SetTask("mine", hitObject);
                     }
                     
                     workerMovement = false;
@@ -115,8 +228,8 @@ public class GameUIScript : MonoBehaviour {
                         {
                             if (selected != null)
                             {
-                                selected_last = selected;
-                                selected = infin;
+                                //selected_last = selected;
+                                //selected = infin;
                             }
 
 
@@ -179,7 +292,7 @@ public class GameUIScript : MonoBehaviour {
     /// called from inside the GameUIScript when an object is selected.
     /// </summary>
     /// <param name="s">The most recently selected object</param>
-    private void SelectedPanelUpdate(MapObject s = null)
+    private void SelectedPanelUpdate(MapObject mo = null)
     {
         actionBar.SetActive(false);
         selectedPanel.SetActive(false);
@@ -196,7 +309,7 @@ public class GameUIScript : MonoBehaviour {
             g.SetActive(false);
         }
 
-        if (s != null)
+        if (mo != null)
         {
             //change the name of the selected object.
             //selectedObjectName.text = s.name;
@@ -213,15 +326,22 @@ public class GameUIScript : MonoBehaviour {
 
             
 
-            Debug.Log(s.Tag);
-            switch (s.Tag)
+            Debug.Log(mo.Tag);
+            switch (mo.Tag)
             {
-                case "Worker": selected_worker.SetActive(true); selected_worker.GetComponent<SelectedWorker>().Selected(s); action_worker.SetActive(true); actionBar.SetActive(true);  break;
-                case "Factory": selected_building.SetActive(true); selected_building.GetComponent<SelectedBuilding>().Selected(s); action_Factory.SetActive(true); actionBar.SetActive(true);  break;
-                case "MassDeposit": selected_resource.SetActive(true); selected_resource.GetComponent<SelectedResource>().Selected(s); break;
+                case "Beacon": selected_Beacon.SetActive(true); selected_Beacon.GetComponent<SelectedBuilding>().Selected(mo); action_Beacon.SetActive(true); actionBar.SetActive(true); break;
+                case "Factory": selected_Factory.SetActive(true); selected_Factory.GetComponent<SelectedBuilding>().Selected(mo); action_Factory.SetActive(true); actionBar.SetActive(true); break;
+                case "Farm": selected_Farm.SetActive(true); selected_Farm.GetComponent<SelectedBuilding>().Selected(mo); action_Farm.SetActive(true); actionBar.SetActive(true); break;
+                case "MassDeposit": selected_ResourceDeposit.SetActive(true); selected_ResourceDeposit.GetComponent<SelectedResource>().Selected(mo); break;
+                case "PowerPlant": selected_PowerPlant.SetActive(true); selected_PowerPlant.GetComponent<SelectedBuilding>().Selected(mo); action_Powerplant.SetActive(true); actionBar.SetActive(true); break;
+                case "Worker": selected_worker.SetActive(true); selected_worker.GetComponent<SelectedWorker>().Selected(mo); action_worker.SetActive(true); actionBar.SetActive(true);  break;
+                
+                
             }
-
+            selectedObjectNameType.text = mo.Tag;
+            selectedImage.sprite = selectedImages[mo.Tag];
             selectedPanel.SetActive(true);
+            
 
             
         }
@@ -231,7 +351,7 @@ public class GameUIScript : MonoBehaviour {
 
     public void WorkerAction()
     {
-        Debug.Log("The current selected object is: " + selected_last.Tag);
+        Debug.Log("The current selected object is: " + selected.Tag);
         workerMovement = true;
         uiClick = true;
 //        + " and the last selected object is: " + selected_last);
@@ -260,6 +380,43 @@ public class GameUIScript : MonoBehaviour {
     /// </summary>
     public void InsideUI(bool inside)
     {
-        uiClick = inside;
+        //uiClick = inside;
+        insideUI = inside;
+    }
+
+    public void ActionBarSelection()
+    {
+       
+    }
+
+
+    /// <summary>
+    /// Load all sprites into the dictionary. Should be called at startup
+    /// </summary>
+    private void LoadSelectedSprites()
+    {
+        selectedImages = new Dictionary<string, Sprite>();
+        
+        //foreach (string s in UnityEditorInternal.InternalEditorUtility.tags)//apparently, this can only be used in the editor.
+        foreach(string s in gameTags)
+        {
+
+            Sprite p = null;
+            try
+            {
+                //Debug.Log("Trying to load the sprite for: " + s);
+                p = Resources.Load<Sprite>("Images/" + s);
+                //Debug.Log(p);
+            }
+            catch
+            {
+                //Debug.LogWarning("Could not load an image for: " + s);
+            }
+            if (p != null)
+            {
+                selectedImages.Add(s, p);
+            }
+
+        }
     }
 }

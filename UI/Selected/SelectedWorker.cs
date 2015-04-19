@@ -22,8 +22,8 @@ public class SelectedWorker : UISelected {
                 myWorker = GetSelected().GetComponent<Worker>();
                 if (myWorker != null)
                 {
-                    health.text = myWorker.Health.ToString() + " health";
-                    foodConsume.text = myWorker.FoodRate.ToString() + " food/s";
+                    health.text = myWorker.Health.ToString()/* + " health"*/;
+                    foodConsume.text = myWorker.FoodRate.ToString()/* + " food/s"*/;
                 }
             }
             

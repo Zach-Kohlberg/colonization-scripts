@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class UISelected : MonoBehaviour {
 
-    public Text /*nameTextBox, */typeTextBox, taskTextBox;
+    public Text /*nameTextBox, typeTextBox, */ taskTextBox;
     private MapObject selectedMapObject;//the MO that is current selected.
     private Unit selectedUnit;
 
@@ -29,7 +29,7 @@ public class UISelected : MonoBehaviour {
     {
         selectedMapObject = mo;
         //nameTextBox.text = mo.name;
-        typeTextBox.text = mo.Tag;
+        //typeTextBox.text = mo.Tag;
         selectedUnit = mo.GetComponent<Unit>();
     }
 
