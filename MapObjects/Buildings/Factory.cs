@@ -25,13 +25,17 @@ public class Factory : Building {
     }
     
     public void DepositMass(int amount) {
-    	//**Send mass to game manager
+    	manager.AddMass(amount);
     }
     
-    public void SpawnUnit(GameObject unit) {
-    	//**Ask game manager about cost for unit, pay cost
-    	Unit u = (Instantiate(unit) as GameObject).GetComponent<Unit>();
-    	u.position = position;
-    	u.SetTask("move", spawn);
+	public void SpawnUnit(GameObject unit) {
+		Unit u = (Instantiate(unit) as GameObject).GetComponent<Unit>();
+		if (manager.SpendMass(manager.GetCost(u.Tag)) != 0) {
+			u.position = position;
+			u.SetTask("move", spawn);
+		}
+		else {
+			Destroy(u.gameObject);
+		}
     }
 }

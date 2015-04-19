@@ -8,6 +8,7 @@ public class PowerPlant : Building {
 	
 	//Private fields
 	private int massRate, powerRate;
+	private float lastTick;
 	
 	//Public properties
 	public int MassRate {
@@ -28,12 +29,17 @@ public class PowerPlant : Building {
 		powerRate = powerPerTick;
 		massRate = massPerTick;
     	tag = "PowerPlant";
+    	lastTick = Time.time;
     }
     
     private void Update() {
 		if (on) {
-			//**Take mass from game manager if possible
-			//**If given mass, generate power for the game manager
+			if (Time.time > lastTick + 1) {
+				if (manager.SpendMass(massRate) > 0) {
+					manager.AddFood(powerRate);
+				}
+				lastTick++;
+			}
 		}
     }
 }

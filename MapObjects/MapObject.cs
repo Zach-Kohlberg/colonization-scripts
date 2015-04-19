@@ -4,11 +4,12 @@ using System.Collections;
 public class MapObject : MonoBehaviour {
 	
 	//Static fields
-	protected static readonly string[] resources = {"MassDeposit"}, units = {"Worker"}, buildings = {"Factory", "Beacon", "PowerPlant", "Farm"};
+	protected static readonly string[] resources = {"MassDeposit"}, units = {"Worker"}, buildings = {"Base", "Factory", "Beacon", "PowerPlant", "Farm"};
 	
 	//Private fields
 	new protected string tag;
 	protected bool on;
+	protected Manager manager;
 	
 	//Public properties
 	public string Tag {
@@ -40,6 +41,7 @@ public class MapObject : MonoBehaviour {
 	protected void MapObjectInit() {
 		on = true;
 		z = 0;
+		manager = GameObject.Find("Manager").GetComponent<Manager>();
 	}
 	
 	//Public method making it easy to determine which type of object this is, in case that matters at some point
@@ -60,5 +62,11 @@ public class MapObject : MonoBehaviour {
 			}
 		}
 		return "none";
+	}
+	
+	//Destroy this map object and inform the manager
+	public virtual void Kill() {
+		//**Inform the manager that I'm dead
+		Destroy(gameObject);
 	}
 }

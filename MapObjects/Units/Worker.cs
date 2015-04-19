@@ -10,7 +10,7 @@ public class Worker : Unit {
 	private int mass, maxMass, foodRate;
 	private Factory deposit;
 	private GameObject buildingPrefab;
-	private float lastAte;
+	private float lastTick;
 	
 	//Public properties
 	public int Mass {
@@ -38,7 +38,7 @@ public class Worker : Unit {
     	tag = "Worker";
     	deposit = null;
     	buildingPrefab = null;
-    	lastAte = Time.time;
+		lastTick = Time.time;
     }
     
     private bool Move() {
@@ -95,7 +95,7 @@ public class Worker : Unit {
     		}
     	}
     	else if (task == "mine") {
-    		if ((targetObject as MassDeposit).Current == 0) {
+			if (targetObject == null || (targetObject as MassDeposit).Current == 0) {
     			if (mass > 0) {
     				SetTask("deposit", NearestFactory());
     			}
@@ -111,37 +111,54 @@ public class Worker : Unit {
     		}
     	}
     	else if (task == "mine-deposit") {
-    		if (!Move()) {
+			if (deposit == null) {
+				SetTask("none", position);
+			}
+    		else if (!Move()) {
 				(deposit as Factory).DepositMass(mass);
+				mass = 0;
 				task = "mine";
-				targetPosition = NextTo(targetObject.position);
+				if (targetObject == null) {
+					SetTask("none", position);
+				}
+				else {
+					targetPosition = NextTo(targetObject.position);
+				}
     		}
     	}
     	else if (task == "deposit") {
-			if (!Move()) {
+			if (targetObject == null) {
+				SetTask("none", position);
+			}
+			else if (!Move()) {
 				(targetObject as Factory).DepositMass(mass);
+				mass = 0;
 				SetTask("none", position);
     		}
     	}
     	else if (task == "build") {
     		if (!MoveNextTo()) {
-    			//**Ensure that we can build this, check with game manager and subtract cost of the building
     			Building b = (Instantiate(buildingPrefab, position, transform.rotation) as GameObject).GetComponent<Building>();
-    			b.position = targetPosition;
-    			SetTask("none", position);
+    			if (manager.SpendMass(manager.GetCost(b.Tag)) != 0) {
+	    			b.position = targetPosition;
+	    			SetTask("none", position);
+    			}
+    			else {
+    				Destroy(b.gameObject);
+    			}
     		}
     	}
     }
     
-    
-    
     private void Update() {
     	if (on) {
-        	PerformTask();
-        }
-        if (Time.time > lastAte + 1) {
-        	//Eat food from game manager or die
-        	lastAte++;
+			PerformTask();
+			if (Time.time > lastTick + 1) {
+				if (manager.SpendFood(foodRate) == 0) {
+					Kill();
+				}
+				lastTick++;
+			}
         }
     }
 }
