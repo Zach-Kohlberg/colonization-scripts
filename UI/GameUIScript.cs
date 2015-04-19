@@ -11,7 +11,7 @@ public class GameUIScript : MonoBehaviour {
     private MapObject selected = null, selected_last = null, infin;//the most recently selected object
     public GameObject selectedPanel, actionBar, selected_worker, selected_building, selected_resource, action_worker, action_Factory;
     private List<GameObject> selectedMapObjectPanels, selectedActionBar;
-
+    private bool uiClick = false;//this determines whether or not the person is clicking the Ui or the actual ground.
 
     private bool workerMovement = false;
 
@@ -32,12 +32,20 @@ public class GameUIScript : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void Update () 
+    {
 
         CameraMovement();
         ActionButtons();
-        PlayerActions();
+        
 	}
+
+    void LateUpdate()
+    {
+        PlayerActions();
+    }
+
+
 
     //this should occur before anything/everything in the update
     private void ActionButtons()
@@ -78,64 +86,85 @@ public class GameUIScript : MonoBehaviour {
 
     private void PlayerActions()
     {
-        //come back and change this later.
-        int mouse = -1;
-    	if (Input.GetMouseButtonDown(0)) {
-    		mouse = 0;
-    	}
-    	else if (Input.GetMouseButtonDown(1)) {
-    		mouse = 1;
-    	}
+        if (!uiClick)
+        {
+            //come back and change this later.
+            int mouse = -1;
+            if (Input.GetMouseButtonDown(0))
+            {
+                mouse = 0;
+            }
+            else if (Input.GetMouseButtonDown(1))
+            {
+                mouse = 1;
+            }
 
-    	if (mouse >= 0) {
-			RaycastHit hit;
-			Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 1000);
-            //Debug.Log(hit.transform.name);
-			if (hit.transform != null) {
-				Vector2 mousePos = hit.point;
-				MapObject hitObject = hit.transform.GetComponent<MapObject>();
-                
-				if (hit.transform.tag == "Ground") {
-					if (mouse == 0) {
-                        if (selected != null)
+            if (mouse >= 0)
+            {
+                RaycastHit hit;
+                Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 1000);
+                //Debug.Log(hit.transform.name);
+                if (hit.transform != null)
+                {
+                    Vector2 mousePos = hit.point;
+                    MapObject hitObject = hit.transform.GetComponent<MapObject>();
+
+                    if (hit.transform.tag == "Ground")
+                    {
+                        if (mouse == 0)
                         {
-                            selected_last = selected;
-                            selected = infin;
+                            if (selected != null)
+                            {
+                                selected_last = selected;
+                                selected = infin;
+                            }
+
+
+                            //update the selected panel
+                            //SelectedPanelUpdate();
                         }
-                        
-                        
-                        //update the selected panel
-                        //SelectedPanelUpdate();
-					}
-					else if (mouse == 1 && selected != null) {
-						if (selected.Tag == "Worker") {
-							(selected as Worker).SetTask("move", mousePos);
-						}
-						else if (selected.Tag == "Factory") {
-							(selected as Factory).Spawn = mousePos;
-						}
-					}
-				}
-				else if (hit.transform.tag == "MapObject") {
-					//Debug.Log("MapObject");
-					if (mouse == 0) {
-						selected = hitObject;
-                        //update the selected panel
-                        SelectedPanelUpdate(hitObject);
-					}
-					else if (mouse == 1) {
-						if (selected.Tag == "Worker") {
-							if (hitObject.Tag == "Factory") {
-								(selected as Worker).SetTask("deposit", hitObject);
-							}
-							else if (hitObject.Tag == "MassDeposit") {
-								(selected as Worker).SetTask("mine", hitObject);
-							}
-						}
-					}
-				}
-			}
-		}
+                        else if (mouse == 1 && selected != null)
+                        {
+                            if (selected.Tag == "Worker")
+                            {
+                                (selected as Worker).SetTask("move", mousePos);
+                            }
+                            else if (selected.Tag == "Factory")
+                            {
+                                (selected as Factory).Spawn = mousePos;
+                            }
+                        }
+                    }
+                    else if (hit.transform.tag == "MapObject")
+                    {
+                        //Debug.Log("MapObject");
+                        if (mouse == 0)
+                        {
+                            selected = hitObject;
+                            //update the selected panel
+                            SelectedPanelUpdate(hitObject);
+                        }
+                        else if (mouse == 1)
+                        {
+                            if (selected.Tag == "Worker")
+                            {
+                                if (hitObject.Tag == "Factory")
+                                {
+                                    (selected as Worker).SetTask("deposit", hitObject);
+                                }
+                                else if (hitObject.Tag == "MassDeposit")
+                                {
+                                    (selected as Worker).SetTask("mine", hitObject);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+        
+        
     }
 
     private void CameraMovement()
@@ -204,6 +233,7 @@ public class GameUIScript : MonoBehaviour {
     {
         Debug.Log("The current selected object is: " + selected_last.Tag);
         workerMovement = true;
+        uiClick = true;
 //        + " and the last selected object is: " + selected_last);
     }
 
@@ -222,5 +252,14 @@ public class GameUIScript : MonoBehaviour {
         header_Resource1Text.text = R1.ToString();
         header_Resource2Text.text = R2.ToString();
         header_Resource3Text.text = R3.ToString();
+    }
+
+
+    /// <summary>
+    /// determine whether or not the user's mouse is inside the UI.
+    /// </summary>
+    public void InsideUI(bool inside)
+    {
+        uiClick = inside;
     }
 }
