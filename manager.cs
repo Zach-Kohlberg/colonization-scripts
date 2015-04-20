@@ -14,16 +14,63 @@ public class manager : MonoBehaviour {
 	}
 
 	public int spendMass(int n) {
-		if (Mass - n >= 0) {
+		if (Mass >= n) {
 			Mass = Mass - n;
 			return n;
 		}
-
-		else  {
+		else {
 			return 0;
 		}
 	}
-	//getters
+
+	
+	//Return the cost to create a specific unit or building
+	public int GetCost(string obj) {
+		return 100;
+	}
+	
+	public void AddMass(int n) {
+		mass += n;
+	}
+	
+	public void AddFood(int n) {
+		food += n;
+	}
+	
+	public void AddPower(int n) {
+		power += n;
+	}
+	
+	public int SpendMass(int n) {
+		if (mass >= n) {
+			mass -= n;
+			return n;
+		}
+		else {
+			return 0;
+		}
+	}
+	
+	public int SpendFood(int n) {
+		if (food >= n) {
+			food -= n;
+			return n;
+		}
+		else {
+			return 0;
+		}
+	}
+	
+	public int SpendPower(int n) {
+		if (power >= n) {
+			power -= n;
+			return n;
+		}
+		else {
+			return 0;
+		}
+	}
+
 	public int Food {
 		get { return food; }
 		set { food = value; }

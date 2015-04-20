@@ -10,6 +10,7 @@ public class Beacon : Building {
 	//Private fields
 	private float radius;
 	private int powerRate;
+	private float lastTick;
 	
 	//Public properties
 	public float Radius {
@@ -30,12 +31,17 @@ public class Beacon : Building {
     	radius = beaconRadius;
     	powerRate = powerPerTick;
     	tag = "Beacon";
+    	lastTick = Time.time;
     }
     
     private void Update() {
 		if (on) {
-			//**Take power from game manager if possible
-        	//**If given power, tell fog of war to go away within a certain radius
+			if (Time.time > lastTick + 1) {
+				if (manager.SpendMass(powerRate) == 0) {
+					//**Turn off beacon
+				}
+				lastTick++;
+			}
         }
     }
 }

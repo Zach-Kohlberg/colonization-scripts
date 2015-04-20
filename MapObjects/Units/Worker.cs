@@ -10,7 +10,7 @@ public class Worker : Unit {
 	private int mass, maxMass, foodRate;
 	private Factory deposit;
 	private GameObject buildingPrefab;
-	private float lastAte;
+	private float lastTick;
 	
 	//Public properties
 	public int Mass {
@@ -38,7 +38,7 @@ public class Worker : Unit {
     	tag = "Worker";
     	deposit = null;
     	buildingPrefab = null;
-    	lastAte = Time.time;
+		lastTick = Time.time;
     }
     
     private bool Move() {
@@ -138,21 +138,27 @@ public class Worker : Unit {
     	}
     	else if (task == "build") {
     		if (!MoveNextTo()) {
-    			//**Ensure that we can build this, check with game manager and subtract cost of the building
     			Building b = (Instantiate(buildingPrefab, position, transform.rotation) as GameObject).GetComponent<Building>();
-    			b.position = targetPosition;
-    			SetTask("none", position);
+    			if (manager.SpendMass(manager.GetCost(b.Tag)) != 0) {
+	    			b.position = targetPosition;
+	    			SetTask("none", position);
+    			}
+    			else {
+    				Destroy(b.gameObject);
+    			}
     		}
     	}
     }
     
     private void Update() {
     	if (on) {
-        	PerformTask();
-        }
-        if (Time.time > lastAte + 1) {
-        	//**Eat food from game manager or die
-        	lastAte++;
+			PerformTask();
+			if (Time.time > lastTick + 1) {
+				if (manager.SpendFood(foodRate) == 0) {
+					Kill();
+				}
+				lastTick++;
+			}
         }
     }
 }

@@ -54,15 +54,24 @@ public class Base : Building {
 	}
 	
 	public void DepositMass(int amount) {
-		//**Send mass to game manager
+		manager.AddMass(amount);
 	}
 	
 	public void SpawnUnit(GameObject unit) {
-		//**Take power and food from game manager if possible, if not tell manager we lose
-		//**Tell fog of war to go away within a certain radius
-		//**Ask game manager about cost for unit, pay cost
 		Unit u = (Instantiate(unit) as GameObject).GetComponent<Unit>();
-		u.position = position;
-		u.SetTask("move", spawn);
+		if (manager.SpendMass(manager.GetCost(u.Tag)) != 0) {
+			u.position = position;
+			u.SetTask("move", spawn);
+		}
+		else {
+			Destroy(u.gameObject);
+		}
+	}
+	
+	private void Update() {
+		//**Tell fog of war to go away within a certain radius
+		if (manager.SpendFood(foodRate) == 0 || manager.SpendPower(powerRate) == 0) {
+			//**You lose the game
+		}
 	}
 }
