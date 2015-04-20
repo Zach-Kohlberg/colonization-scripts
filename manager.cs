@@ -1,27 +1,21 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
 public class manager : MonoBehaviour {
-	private int food = 0, mass =0, beacons =0, factories =0, farms =0, workers =0, workerBuildLevel = 1, workerGatherLevel = 1;
+
+
+
+	private int food = 100, power = 0, mass = 0, beacons =0, factories =0, farms =0, workers =0, workerBuildLevel = 1, workerGatherLevel = 1;
 	private List<GameObject> workersList, beaconsList, factoriesList, farmsList;
-	// Use this for initialization
-	void Start () {
 
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
-	void addMass(int n) {
-		setMass (getMass() + n);
+	public void addMass(int n) {
+		Mass = Mass + n;
 	}
 
-	int spendMass(int n) {
-		if (getMass() - n > 0) {
-			setMass(getMass() -n);
+	public int spendMass(int n) {
+		if (Mass - n >= 0) {
+			Mass = Mass - n;
 			return n;
 		}
 
@@ -30,77 +24,65 @@ public class manager : MonoBehaviour {
 		}
 	}
 	//getters
-	public int getFood() {
-		return food;
+	public int Food {
+		get { return food; }
+		set { food = value; }
 	}
 
-	public int getMass() {
-		return mass;
+	public int Mass {
+		get { return mass; }
+		set { mass = value; }
 	}
 
-	public int getBeacons() {
-		return beacons;
+	public int Beacons {
+		get { return beacons; }
+		set { beacons = value; }
 	}
 
-	public int getFactories() {
-		return factories;
+	public int Factories {
+		get { return factories; }
+		set { factories = value; }
 	}
 
-	public int getFarms() {
-		return farms;
+	public int Farms {
+		get { return farms; }
+		set { farms = value; }
 	}
 
-	public int getWorkers() {
-		return workers;
+	public int Power {
+		get { return power; }
+		set { power = value; }
 	}
 
-	public int getWorkerGatherLevel() {
-		return workerGatherLevel;
+	public int Workers {
+		get { return workers; }
+		set { workers = value; }
 	}
 
-	public int getWorkerBuildLeve() {
-		return workerBuildLevel;
+	public int WorkerGathererLevel {
+		get { return workerGatherLevel; }
+		set { workerGatherLevel = value; }
 	}
-	//setters
-	public void setFood(int food) {
-		this.food = food;
+
+	public int WorkerBuildLevel {
+		get { return workerBuildLevel; }
+		set { workerBuildLevel = value; }
 	}
-	public void setMass(int mass) {
-		this.mass = mass;
-	}
-	public void setBeacons(int beacons) {
-		this.beacons = beacons;
-	}
-	public void setFactories(int factories) {
-		this.factories = factories;
-	}
-	public void setFarms(int farms) {
-		this.farms = farms;
-	}
-	public void setWorkers(int workers) {
-		this.workers = workers;
-	}
-	public void setWorkerBuildLevel(int workerBuildLevel) {
-		this.workerBuildLevel = workerBuildLevel;
-	}
-	public void setWorkerGatherLevel(int workerGatherLevel) {
-		this.workerGatherLevel = workerGatherLevel;
-	}
-	//adders
+
 	public void addWorker(GameObject worker) {
-		workersList [workers] = worker;
-		setWorkers (getWorkers ()+ 1);
+		workersList [Workers] = worker;
+		Workers = Workers + 1;
 	}
 	public void addBeacon(GameObject beacon) {
-		beaconsList [beacons] = beacon;
-		setBeacons (getBeacons ()+ 1);
+		beaconsList [Beacons] = beacon;
+		Beacons = Beacons + 1;
 	}
 	public void addFactory(GameObject factory) {
-		factoriesList [factories] = factory;
-		setFactories (getFactories ()+ 1);
+		factoriesList [Factories] = factory;
+		Factories = Factories + 1;
 	}
 	public void addFarm(GameObject farm) {
-		farmsList [farms] = farm;
-		setFarms (getFarms ()+ 1);
+		farmsList [Farms] = farm;
+		Farms = Farms + 1;
 	}
 }
