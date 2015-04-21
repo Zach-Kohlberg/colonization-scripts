@@ -66,6 +66,11 @@ public class Manager : MonoBehaviour {
 		return food;
 	}
 
+    public int getPower()
+    {
+        return power;
+    }
+
 	public int getMass() {
 		return mass;
 	}

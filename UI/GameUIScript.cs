@@ -62,6 +62,7 @@ public class GameUIScript : MonoBehaviour {
         {
             header_Resource1Text.text = "Mass: " + manager.getMass();
             header_Resource2Text.text = "Food: " + manager.getFood();
+            header_Resource3Text.text = "Power: " + manager.getPower();
             
             //header_Resource3Text.text = "Eneger: " + manager.get
         }
@@ -553,6 +554,7 @@ public class GameUIScript : MonoBehaviour {
                 if (currentMO.Tag == "Worker")
                 {
                     //nothing here because workers do not currently have a way to stop
+                    (currentMO as Worker).SetTask("none", currentMO);
                 }
             }
             else if(clickedAction == "workerKill")
