@@ -564,7 +564,12 @@ public class GameUIScript : MonoBehaviour {
                     //kill the current worker
                     currentMO.Kill();
                     currentMO = null;
+                    UICancelAction();
                     SelectedPanelUpdate();
+                    //the ui should now be turned off since the currentmo is null.
+                    //so set the insideui val to false
+                    InsideUI(false);
+
                 }
             }
             else if (clickedAction == "Cancel")
