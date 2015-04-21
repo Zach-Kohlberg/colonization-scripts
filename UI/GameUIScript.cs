@@ -6,11 +6,15 @@ using System.Collections.Generic;
 public class GameUIScript : MonoBehaviour {
 
     public string[] gameTags;//the tags that our objects use.
+    public string[] uiActionNames;//the names of all the actions the UI controls.
     public float panSpeed = 2f;//how quickly should the camera move?
     public Text selectedObjectNameType, header_Resource1Text, header_Resource2Text, header_Resource3Text;
     public Image selectedImage;
     public GameObject selectedPanel, actionBar, selected_worker, selected_Beacon, selected_Factory, selected_Farm, selected_PowerPlant, selected_ResourceDeposit, action_worker, action_Beacon, action_Factory, action_Farm, action_Powerplant;
-    
+    public Button action_CancelButton;//the button used to cancel an action
+
+    public GameObject prefabWorker, prefabBeacon, prefabFactory, prefabFarm, prefabPowerPlant;//these are the objects that will be built by units
+
     private List<GameObject> selectedMapObjectPanels, selectedActionBar;
     private Manager manager = null;
     private bool workerMovement = false, uiClick = false;//this determines whether or not the person is clicking the Ui or the actual ground.
@@ -20,7 +24,11 @@ public class GameUIScript : MonoBehaviour {
     private MapObject selected = null;//the most recently selected object
     
     private Dictionary<string, Sprite> selectedImages;
-    private bool insideUI = false, clickedUIActionButton = false;//is the player inside the UI? Did the player click a UI Action Button?
+
+    private Button last_clickedButton = null;
+    private string clickedAction = "";
+    private Dictionary<string, bool> uiActions;
+    private bool insideUI = false, clickedUIActionButton = false, clickedWorkerActionButton = false;//is the player inside the UI? Did the player click a UI Action Button?
     private MapObject currentMO;//the mo the player is currently entranced with.
 
     void Awake()
@@ -69,20 +77,20 @@ public class GameUIScript : MonoBehaviour {
     /// </summary>
     private void PlayerInteractions()
     {
-        
+        int mouseClick = -1;
+        if (Input.GetMouseButtonUp(0))
+        {
+            mouseClick = 0;
+        }
+        else if (Input.GetMouseButtonUp(1))
+        {
+            mouseClick = 1;
+        }
 
-        //if the player is not inside the UI, and has not clicked a UI button
+#region if the player is not inside the UI, and has not clicked a UI button
         if (!insideUI && !clickedUIActionButton)
         {
-            int mouseClick = -1;
-            if (Input.GetMouseButton(0))
-            {
-                mouseClick = 0;
-            }
-            else if (Input.GetMouseButton(1))
-            {
-                mouseClick = 1;
-            }
+            
 
             //if the mouse was clicked
             if (mouseClick > -1)
@@ -93,58 +101,185 @@ public class GameUIScript : MonoBehaviour {
                 //determine if an acceptable object was clicked on.
                 if (hit.transform != null)
                 {
-                    //get a reference to the hit object
-                    MapObject hitObject = hit.transform.GetComponent<MapObject>();
-                    if (hitObject != null)
+                    #region if the ground was hit.
+                    if (hit.transform.gameObject.CompareTag("Ground"))
                     {
-                        # region //if the ground was hit
-                        if (hitObject.CompareTag("Ground"))
+                        //if it was a left click, keep/make it null
+                        if (mouseClick == 0)
                         {
-                            //if it was a left click, keep/make it null
-                            if (mouseClick == 0)
+                            currentMO = null;
+                            //update the panel and actionbar.
+                            SelectedPanelUpdate();
+                        }
+                        // if it was a right click, determine what was going on.
+                        else if (mouseClick == 1 && currentMO != null)
+                        {
+                            if (currentMO.Tag == "Worker" || currentMO.Tag == "Factory")
                             {
-                                currentMO = null;
-                                //update the panel and actionbar.
-                                SelectedPanelUpdate();
-                            }
-                            // if it was a right click, determine what was going on.
-                            else if (mouseClick == 1 && currentMO != null)
-                            {
-                                if (currentMO.Tag == "Worker" || currentMO.Tag == "Factory")
+                                //get the location/position of the click
+                                Vector2 position = hit.point;
+
+                                if (currentMO.Tag == "Worker")
                                 {
-                                    //get the location/position of the click
-                                    Vector2 position = hit.point;
-
-                                    if (currentMO.Tag == "Worker")
-                                    {
-                                        //tell the worker where to move to.
-                                        currentMO.GetComponent<Worker>().SetTask("move", position);
-                                    }
-
-                                    else if (currentMO.Tag == "Factory")
-                                    {
-                                        //set the spawn position of the factory
-                                        currentMO.GetComponent<Factory>().Spawn = position;
-                                    }
+                                    //tell the worker where to move to.
+                                    currentMO.GetComponent<Worker>().SetTask("move", position);
                                 }
 
+                                else if (currentMO.Tag == "Factory")
+                                {
+                                    //set the spawn position of the factory
+                                    currentMO.GetComponent<Factory>().Spawn = position;
+                                }
                             }
-                            
 
                         }
-                        #endregion
-                        #region MassDeposit Clicked
-                        else if (hitObject.Tag == "MassDeposit")
+                    }
+#endregion
+                    #region Else hit a Mapobject
+                    else
+                    {
+                        //get a reference to the hit object's mapobject
+                        MapObject hitObject = hit.transform.GetComponent<MapObject>();
+                        if (hitObject != null)
                         {
 
+
+                            Debug.Log("hitObject = " + hitObject.name);
+                            
+                            //if it was a left click, change the selected object
+                            if (mouseClick == 0)
+                            {
+                                currentMO = hitObject;
+                                SelectedPanelUpdate(currentMO);
+                                
+                            }
+                            //if it was a right-click...
+                            else if (mouseClick == 1)
+                            {
+                                #region Right-Click Mass Deposit
+                                if (hitObject.Tag == "MassDeposit")
+                                {
+                                    if (currentMO.Tag == "Worker")
+                                    {
+                                        (currentMO as Worker).SetTask("mine", hitObject);
+                                    }
+                                }
+                                #endregion
+
+                                #region Right-Click Factory
+                                if (hitObject.Tag == "Factory")
+                                {
+                                    if (currentMO.Tag == "Worker")
+                                    {
+                                        (currentMO as Worker).SetTask("deposit", hitObject);
+                                    }
+                                }
+                                #endregion
+                            }
+                            
+                            
+                            
                         }
-                        #endregion
                     }
-                    
+                    #endregion
+
+
                 }
             }
 
         }
+#endregion
+
+        #region if the player is outside the UI and has clicked a UI button
+        else if (!insideUI && currentMO != null && clickedUIActionButton)
+        {
+            //if left clicked
+            if (mouseClick == 0)
+            {
+                RaycastHit hit;
+                Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 1000);
+                Vector2 pos = hit.point;
+                MapObject mo = hit.transform.GetComponent<MapObject>();
+
+                #region worker
+                if (currentMO.Tag == "Worker")
+                {
+                    Worker worker = currentMO.GetComponent<Worker>();
+                    #region workerAction
+                    if (clickedAction == "workerAction")
+                    {
+                        //move, mine, deposit
+                        if (hit.transform.CompareTag("Ground"))
+                        {
+                            (currentMO as Worker).SetTask("move", pos);
+                            UICancelAction();
+                        }
+                        else if (mo != null)
+                        {
+                            if (mo.Tag == "MassDeposit")
+                            {
+                                (currentMO as Worker).SetTask("mine", mo);
+                                UICancelAction();
+                            }
+                            else if (mo.Tag == "Factory")
+                            {
+                                (currentMO as Worker).SetTask("deposit", mo);
+                                UICancelAction();
+                            }
+                        }
+                    }
+                    #endregion
+                    #region Build
+                        switch(clickedAction){
+                            case "workerBuildBeacon": worker.Build(prefabBeacon, pos); UICancelAction(); break;
+                            case "workerBuildFactory": worker.Build(prefabFactory, pos); UICancelAction(); break;
+                            case "workerBuildFarm": worker.Build(prefabFarm, pos); UICancelAction(); break;
+                            case "workerBuildPowerPlant": worker.Build(prefabPowerPlant, pos); UICancelAction(); break;
+                        }
+                    
+                    #endregion
+                }
+                #endregion
+                #region factory
+                if (currentMO.Tag == "Factory")
+                {
+                    Factory factory = currentMO.GetComponent<Factory>();
+                    switch (clickedAction)
+                    {
+                        case "factoryRally": factory.Spawn = pos; UICancelAction(); break;
+                    }
+                }
+                #endregion
+
+                ////if the ground was clicked
+                //if (hit.transform.CompareTag("Ground"))
+                //{
+                //    //if we are using a worker
+                //    #region worker
+                //    if (currentMO.Tag == "Worker")
+                //    {
+
+                //        if (clickedAction == "workerAction")
+                //        {
+                //            //move
+
+                //        }
+                //    }
+                //    #endregion
+                //}
+                
+            }
+                //right clicked - cancel action
+            else if(mouseClick == 1)
+            {
+                clickedAction = " ";
+                action_CancelButton.interactable = false;
+                last_clickedButton.interactable = true;
+            }
+            
+        }
+        
+        #endregion
     }
 
 
@@ -320,7 +455,7 @@ public class GameUIScript : MonoBehaviour {
 
             //change the data displayed for the selected object.
 
-
+            
 
 
 
@@ -338,8 +473,34 @@ public class GameUIScript : MonoBehaviour {
                 
                 
             }
+            //set the name
             selectedObjectNameType.text = mo.Tag;
+            //set the sprite
             selectedImage.sprite = selectedImages[mo.Tag];
+            
+
+            //set all buttons in the action bar to interactable so that they can be interacted with.
+            GameObject aBar = null;//the actionbar that is now active
+            foreach (GameObject ab in selectedActionBar)
+            {
+                //loop through the list to find the action bar that is now active.
+                if (ab.activeInHierarchy)
+                {
+                    aBar = ab;
+                    break;
+                }
+            }
+            if (aBar != null)
+            {
+                //gain all button components in the children of the active bar.
+                Button[] btns = aBar.transform.GetComponentsInChildren<Button>();
+                foreach (Button btn in btns)
+                {
+                    //make each of these buttons interactable in case they were not.
+                    btn.interactable = true;
+                }
+            }
+            
             selectedPanel.SetActive(true);
             
 
@@ -349,15 +510,113 @@ public class GameUIScript : MonoBehaviour {
         
     }
 
-    public void WorkerAction()
+
+    /// <summary>
+    /// called by the buttons in the actionbar
+    /// </summary>
+    /// <param name="btn">//the name of the button that was clicked</param>
+    public void UISelectAction(Button btn)
     {
-        Debug.Log("The current selected object is: " + selected.Tag);
-        workerMovement = true;
-        uiClick = true;
+        clickedAction = btn.name;//find the name of the button
+        
+        //check the array to make sure that the clicked button shows up as a possible action
+        bool t = false;
+
+        foreach (string n in uiActionNames)
+        {
+            if (clickedAction == n)
+            {
+                t = true; break;
+            }
+            else
+            {
+                t = false;
+            }
+        }
+        //if the action was not in the list, reset the clicked action and quit
+        if (!t)
+        {
+            clickedAction = " ";
+            return;
+        }
+
+        if (currentMO != null)
+        {
+            if (clickedAction == "On/Off")
+            {
+                //turn the current MO off/on
+                currentMO.On = !currentMO.On;
+            }
+                //may need to come back and change this later. If more than a few MO's can be stopped/killed, it would be better to just compare Kill/stop
+            else if (clickedAction == "workerStop")
+            {
+                if (currentMO.Tag == "Worker")
+                {
+                    //nothing here because workers do not currently have a way to stop
+                }
+            }
+            else if(clickedAction == "workerKill")
+            {
+                if (currentMO.Tag == "Worker")
+                {
+                    //kill the current worker
+                    currentMO.Kill();
+                    currentMO = null;
+                    SelectedPanelUpdate();
+                }
+            }
+            else if (clickedAction == "Cancel")
+            {
+
+                UICancelAction();
+                
+            }
+            else if (clickedAction == "factoryConstructWorker")
+            {
+                if (currentMO.Tag == "Factory")
+                {
+                    (currentMO as Factory).SpawnUnit(prefabWorker);
+                }
+            }
+            else
+            {
+
+                //since there are currently no other options...
+                //make the clicked button un-interactable
+                btn.interactable = false;
+                last_clickedButton = btn;
+                action_CancelButton.interactable = true;
+                clickedUIActionButton = true;
+            }
+        }
+        
+
+
+
+
+
+
+
+
+
+        //Debug.Log("The current selected object is: " + selected.Tag);
+        //workerMovement = true;
+        //uiClick = true;
 //        + " and the last selected object is: " + selected_last);
     }
 
-
+    //called anywhere in the script where an action has either been completed or reset
+    private void UICancelAction()
+    {
+        action_CancelButton.interactable = false;
+        clickedAction = " ";
+        clickedUIActionButton = false;
+        //make the recently clicked button interactable again.
+        if (last_clickedButton != null)
+        {
+            last_clickedButton.interactable = true;
+        }
+    }
 
 
 
@@ -380,13 +639,7 @@ public class GameUIScript : MonoBehaviour {
     /// </summary>
     public void InsideUI(bool inside)
     {
-        //uiClick = inside;
         insideUI = inside;
-    }
-
-    public void ActionBarSelection()
-    {
-       
     }
 
 
@@ -419,4 +672,7 @@ public class GameUIScript : MonoBehaviour {
 
         }
     }
+
+
+
 }
