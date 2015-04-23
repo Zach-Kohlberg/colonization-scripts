@@ -153,9 +153,10 @@ public class Worker : Unit {
     private void Update() {
     	if (on) {
 			PerformTask();
+            Debug.Log("Worker Update");
 			if (Time.time > lastTick + 1) {
 				if (manager.SpendFood(foodRate) == 0) {
-					Kill();
+					//Kill();
 				}
 				lastTick++;
 			}

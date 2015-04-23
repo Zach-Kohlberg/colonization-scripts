@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class manager : MonoBehaviour {
+public class Manager : MonoBehaviour {
 
 
 
