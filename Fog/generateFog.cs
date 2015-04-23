@@ -10,7 +10,8 @@ public class generateFog : MonoBehaviour {
 		position = new Vector3 (x, y, z);
 		for (int t = 0; t < l; t++) {
 			for(int o = 0; o < w; o++){
-				Instantiate(fogPiece,new Vector3(position.x+t,position.y,position.z+o), Quaternion.identity);
+				GameObject a = Instantiate(fogPiece,new Vector3(position.x+t,position.y+o,position.z), Quaternion.Euler(-90,0,0)) as GameObject;
+				//a.transform.rotation = new Quaternion(270,0,0,1);
 			}
 		}
 	}

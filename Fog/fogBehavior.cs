@@ -3,9 +3,15 @@ using System.Collections;
 
 public class fogBehavior : MonoBehaviour {
 	public GameObject fogCloud;
+	Quaternion rotation;
 	//place this on the game object that is a parent of the fog.
 	//disables fog when light is touching it, and disables fog while light is not on
 	//light must SHRINK its radius in order for exit to trigger and EXPAND to trigger enter
+	void Start() {
+		//rotation = transform.rotation;
+		//rotation.y = -90;
+		//transform.rotation = rotation;
+	}
 
 	void OnTriggerEnter(Collider col) {
 		if (col.tag.Equals ("Light")) {
