@@ -4,24 +4,24 @@ using System.Collections;
 public class Worker : Unit {
     
 	//Inspector fields
-	public int unitCapacity, foodPerTick;
+	public int unitCapacity, foodPerSec;
 	
 	//Private fields
-	private int mass, maxMass, foodRate;
+	private float mass, maxMass, foodRate;
 	private Factory deposit;
 	private GameObject buildingPrefab;
 	private float lastTick;
 	
 	//Public properties
-	public int Mass {
+	public float Mass {
 		get { return mass; }
 		private set { mass = value; }
 	}
-	public int MaxMass {
+	public float MaxMass {
 		get { return maxMass; }
 		private set { maxMass = value; }
 	}
-	public int FoodRate {
+	public float FoodRate {
 		get { return foodRate; }
 		private set { foodRate = value; }
 	}
@@ -34,7 +34,7 @@ public class Worker : Unit {
 		UnitInit();
     	mass = 0;
     	maxMass = unitCapacity;
-    	foodRate = foodPerTick;
+    	foodRate = foodPerSec;
     	tag = "Worker";
     	deposit = null;
     	buildingPrefab = null;
@@ -139,7 +139,7 @@ public class Worker : Unit {
     	else if (task == "build") {
     		if (!MoveNextTo()) {
     			Building b = (Instantiate(buildingPrefab, position, transform.rotation) as GameObject).GetComponent<Building>();
-    			if (manager.SpendMass(manager.GetCost(b.Tag)) != 0) {
+    			if (manager.SpendMass(manager.GetCost(b.Tag))) {
 	    			b.position = targetPosition;
 	    			SetTask("none", position);
     			}
@@ -155,7 +155,7 @@ public class Worker : Unit {
 			PerformTask();
             Debug.Log("Worker Update");
 			if (Time.time > lastTick + 1) {
-				if (manager.SpendFood(foodRate) == 0) {
+				if (!manager.SpendFood(foodRate*Time.deltaTime)) {
 					//Kill();
 				}
 				lastTick++;

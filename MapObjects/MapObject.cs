@@ -16,6 +16,9 @@ public class MapObject : MonoBehaviour {
 		get { return tag; }
 		private set { tag = value; }
 	}
+	public string Type {
+		get { return TagType(tag); }
+	}
 	public bool On {
 		get { return on; }
 		set { on = value; }
@@ -44,24 +47,23 @@ public class MapObject : MonoBehaviour {
 		manager = GameObject.Find("Manager").GetComponent<Manager>();
 	}
 	
-	//Public method making it easy to determine which type of object this is, in case that matters at some point
-	public string TagType() {
+	public static string TagType(string t) {
 		foreach (string s in resources) {
-			if (s == tag) {
+			if (s == t) {
 				return "Resource";
 			}
 		}
 		foreach (string s in units) {
-			if (s == tag) {
+			if (s == t) {
 				return "Unit";
 			}
 		}
 		foreach (string s in buildings) {
-			if (s == tag) {
+			if (s == t) {
 				return "Building";
 			}
 		}
-		return "none";
+		return "None";
 	}
 	
 	//Destroy this map object and inform the manager

@@ -4,18 +4,17 @@ using System.Collections;
 public class Farm : Building {
     
     //Public properties for inspector
-	public int massPerTick, foodPerTick;
+	public float massPerSec, foodPerSec;
     
     //Private fields
-	private int massRate, foodRate;
-	private float lastTick;
+	private float massRate, foodRate;
     
 	//Public properties
-	public int MassRate {
+	public float MassRate {
 		get { return massRate; }
 		private set { massRate = value; }
 	}
-	public int FoodRate {
+	public float FoodRate {
     	get { return foodRate; }
     	private set { foodRate = value; }
     }
@@ -26,19 +25,15 @@ public class Farm : Building {
     
 	private void FarmInit() {
 		BuildingInit();
-		foodRate = foodPerTick;
-		massRate = massPerTick;
+		foodRate = foodPerSec;
+		massRate = massPerSec;
     	tag = "Farm";
-    	lastTick = Time.time;
     }
     
     private void Update() {
 		if (on) {
-			if (Time.time > lastTick + 1) {
-				if (manager.SpendMass(massRate) > 0) {
-					manager.AddFood(foodRate);
-				}
-				lastTick++;
+			if (manager.SpendMass(massRate*Time.deltaTime)) {
+				manager.AddFood(foodRate*Time.deltaTime);
 			}
 		}
     }

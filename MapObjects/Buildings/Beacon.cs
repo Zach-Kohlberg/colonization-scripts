@@ -5,19 +5,18 @@ public class Beacon : Building {
 	
 	//Inspector fields
 	public float beaconRadius;
-	public int powerPerTick;
+	public float powerPerSec;
 	
 	//Private fields
 	private float radius;
-	private int powerRate;
-	private float lastTick;
+	private float powerRate;
 	
 	//Public properties
 	public float Radius {
 		get { return radius; }
 		private set { radius = value; }
 	}
-	public int PowerRate {
+	public float PowerRate {
 		get { return powerRate; }
 		private set { powerRate = value; }
 	}
@@ -29,18 +28,14 @@ public class Beacon : Building {
 	private void BeaconInit() {
 		BuildingInit();
     	radius = beaconRadius;
-    	powerRate = powerPerTick;
+    	powerRate = powerPerSec;
     	tag = "Beacon";
-    	lastTick = Time.time;
     }
     
     private void Update() {
 		if (on) {
-			if (Time.time > lastTick + 1) {
-				if (manager.SpendMass(powerRate) == 0) {
-					//**Turn off beacon
-				}
-				lastTick++;
+			if (!manager.SpendMass(powerRate*Time.deltaTime)) {
+				//**Turn off beacon
 			}
         }
     }

@@ -4,18 +4,17 @@ using System.Collections;
 public class PowerPlant : Building {
 	
 	//Inspector fields
-	public int massPerTick, powerPerTick;
+	public float massPerSec, powerPerSec;
 	
 	//Private fields
-	private int massRate, powerRate;
-	private float lastTick;
+	private float massRate, powerRate;
 	
 	//Public properties
-	public int MassRate {
+	public float MassRate {
 		get { return massRate; }
 		private set { massRate = value; }
 	}
-	public int PowerRate {
+	public float PowerRate {
 		get { return powerRate; }
 		private set { powerRate = value; }
 	}
@@ -26,19 +25,15 @@ public class PowerPlant : Building {
     
 	private void PowerPlantInit() {
 		BuildingInit();
-		powerRate = powerPerTick;
-		massRate = massPerTick;
+		powerRate = powerPerSec;
+		massRate = massPerSec;
     	tag = "PowerPlant";
-    	lastTick = Time.time;
     }
     
     private void Update() {
 		if (on) {
-			if (Time.time > lastTick + 1) {
-				if (manager.SpendMass(massRate) > 0) {
-					manager.AddFood(powerRate);
-				}
-				lastTick++;
+			if (manager.SpendMass(massRate*Time.deltaTime)) {
+				manager.AddFood(powerRate*Time.deltaTime);
 			}
 		}
     }
