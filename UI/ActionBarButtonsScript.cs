@@ -5,9 +5,9 @@ using UnityEngine.UI;
 public class ActionBarButtonsScript : MonoBehaviour {
 
     public Text actionbarHoverText, costText;
-    public string actionBarTextInfo;
-    public GameObject buildingPrefab;
-    public bool building = false;
+    public string mapobjectTag, actionBarTextInfo;
+    //public GameObject buildingPrefab;
+    public bool building = false, worker = false;
     private Manager manager;
 
     private float cost = 0;
@@ -25,13 +25,18 @@ public class ActionBarButtonsScript : MonoBehaviour {
         if (building)
         {
             Debug.Log("building prefab is not null");
-            cost = manager.GetCost(buildingPrefab.GetComponent<MapObject>().Tag);
+            cost = manager.GetCost(mapobjectTag);
+        }
+        if (worker)
+        {
+            Debug.Log("worker is not null");
+            cost = manager.GetCost(mapobjectTag);
         }
 	}
 	
 	// Update is called once per frame
 	void Update () {
-        if (building)
+        if (building || worker)
         {
             if (manager.Mass < cost)
             {
@@ -48,7 +53,7 @@ public class ActionBarButtonsScript : MonoBehaviour {
     {
         Debug.Log("Hovering");
         actionbarHoverText.text = actionBarTextInfo;
-        if (buildingPrefab != null)
+        if (cost != 0)
         {
             costText.text = "Cost\n" + cost.ToString();
         }
@@ -56,7 +61,11 @@ public class ActionBarButtonsScript : MonoBehaviour {
 
     public void ActionBarMouseOut()
     {
-        actionbarHoverText.text = " ";
-        costText.text = " ";
+        if (gameObject.GetComponent<Button>().interactable)
+        {
+            actionbarHoverText.text = " ";
+            costText.text = " ";
+        }
+        
     }
 }

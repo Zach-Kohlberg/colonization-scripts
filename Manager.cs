@@ -1,8 +1,5 @@
 using UnityEngine;
-<<<<<<< HEAD
-=======
 using System;
->>>>>>> origin/master
 using System.Collections;
 using System.Collections.Generic;
 
@@ -53,7 +50,12 @@ public class Manager : MonoBehaviour {
 		get { return power; }
 		set { power = value; }
 	}
-	
+
+    private void Awake()
+    {
+        ManagerInit();
+    }
+
 	private void ManagerInit() {
 		food = initFood;
 		mass = initMass;
@@ -68,8 +70,10 @@ public class Manager : MonoBehaviour {
 			prefabs.Add(p.key, p.value);
 		}
 		costs = new Dictionary<string, float>();
+        Debug.LogWarning("ManagerInit");
 		foreach (Property c in initCosts) {
 			costs.Add(c.key, c.value);
+            Debug.LogWarning(c.key + " and " + c.value);
 		}
 	}
 	
@@ -96,9 +100,11 @@ public class Manager : MonoBehaviour {
 	//Return the cost to create a specific unit or building
 	public float GetCost(string tag) {
 		if (costs.ContainsKey(tag)) {
+            Debug.LogWarning(costs[tag]);
 			return costs[tag];
 		}
 		else {
+            Debug.LogWarning("Could not Find a cost for the building: " + tag);
 			return Int32.MaxValue;
 		}
 	}
@@ -165,4 +171,12 @@ public class Manager : MonoBehaviour {
 	public void RemoveMapObject(MapObject m) {
 		mapObjectList.Remove(m);
 	}
+
+    void Update()
+    {
+        //if (Input.GetButtonUp(KeyCode.T))
+        //{
+        //    cost
+        //}
+    }
 }

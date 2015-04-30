@@ -35,13 +35,14 @@ public class Unit : MapObject {
     
     //Base init method
     protected void UnitInit() {
+        MapObjectInit();
     	health = MaxHealth;
     	
     	targetObject = null;
     	targetPosition = new Vector2(x,y);
 		task = "none";
 		
-		MapObjectInit();
+		
     }
     
     //Methods for directing units

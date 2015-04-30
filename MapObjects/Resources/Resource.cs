@@ -21,9 +21,10 @@ public class Resource : MapObject {
     
     //Base init method
     protected void ResourceInit() {
+        MapObjectInit();
     	current = Mathf.Min(initialResource,maxResource);
     	max = maxResource;
     	
-		MapObjectInit();
+		
     }
 }

@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class SelectedWorker : UISelected {
 
-    public Text health, foodConsume, speed;
+    public Text health, foodConsume, carry;
     private Worker myWorker;
 
 	// Use this for initialization
@@ -24,7 +24,7 @@ public class SelectedWorker : UISelected {
                 {
                     health.text = myWorker.Health.ToString()/* + " health"*/;
                     foodConsume.text = myWorker.FoodRate.ToString()/* + " food/s"*/;
-                    speed.text = myWorker.Speed.ToString();
+                    carry.text = (int) myWorker.Mass + " / " + (int) myWorker.MaxMass;
                 }
             }
             
