@@ -45,6 +45,7 @@ public class MapObject : MonoBehaviour {
 		on = true;
 		z = 0;
 		manager = GameObject.Find("Manager").GetComponent<Manager>();
+		manager.AddMapObject(this);
 	}
 	
 	public static string TagType(string t) {
@@ -68,7 +69,7 @@ public class MapObject : MonoBehaviour {
 	
 	//Destroy this map object and inform the manager
 	public virtual void Kill() {
-		//**Inform the manager that I'm dead
+		manager.RemoveMapObject(this);
 		Destroy(gameObject);
 	}
 }

@@ -5,23 +5,37 @@ using System.Collections.Generic;
 
 public class Manager : MonoBehaviour {
 	
-	//Struct for the inspector
+	//Structs for the inspector
 	[Serializable]
 	public struct Property {
 		public string key;
 		public float value;
+	}
+	[Serializable]
+	public struct Prefab {
+		public string key;
+		public GameObject value;
 	}
 	
 	//Initial resources
 	public float initMass, initFood, initPower;
 	//Initial stats
 	public Property[] initStats;
+	//Prefab list
+	public Prefab[] initPrefabs;
+	//Cost list
+	public Property[] initCosts;
 	
 	//Resources
 	private float food, power, mass;
+	//Add objects in the game
+	private List<MapObject> mapObjectList;
 	//Map object stats
 	private Dictionary<string, float> stats;
-	private List<MapObject> mapObjectList;
+	//Map object prefabs
+	private Dictionary<string, GameObject> prefabs;
+	//Unit and building costs
+	private Dictionary<string, float> costs;
 	
 	//Public properties
 	public float Food {
@@ -45,6 +59,14 @@ public class Manager : MonoBehaviour {
 		stats = new Dictionary<string, float>();
 		foreach (Property p in initStats) {
 			stats.Add(p.key, p.value);
+		}
+		prefabs = new Dictionary<string, GameObject>();
+		foreach (Prefab p in initPrefabs) {
+			prefabs.Add(p.key, p.value);
+		}
+		costs = new Dictionary<string, float>();
+		foreach (Property c in initCosts) {
+			costs.Add(c.key, c.value);
 		}
 	}
 	
@@ -70,7 +92,22 @@ public class Manager : MonoBehaviour {
 	
 	//Return the cost to create a specific unit or building
 	public int GetCost(string tag) {
-		return 100;
+		if (costs.ContainsKey(tag)) {
+			return costs[tag];
+		}
+		else {
+			return Int32.MaxValue;
+		}
+	}
+	
+	//Return a prefab for the map object that we're building
+	public GameObject GetPrefab(string tag) {
+		if (prefabs.ContainsKey(tag)) {
+			return prefabs[tag];
+		}
+		else {
+			return null;
+		}
 	}
 	
 	public void AddMass(float n) {
@@ -118,11 +155,11 @@ public class Manager : MonoBehaviour {
 		}
 	}
 
-	public void addMapObject(Unit m) {
+	public void AddMapObject(MapObject m) {
 		mapObjectList.Add(m);
 	}
 	
-	public void removeMapObject(MapObject m) {
+	public void RemoveMapObject(MapObject m) {
 		mapObjectList.Remove(m);
 	}
 }
