@@ -3,27 +3,22 @@ using System.Collections;
 
 public class Unit : MapObject {
     
-    //Inspector fields
-    public float unitSpeed, unitMaxHealth;
-    
     //Private fields
-	protected float speed, health, maxHealth;
+	protected float health;
 	protected MapObject targetObject;
 	protected Vector2 targetPosition;
 	protected string task;
     
     //Public properties
     public float Speed {
-    	get { return speed; }
-    	private set { speed = value; }
+		get { return manager.Stat(tag+"Speed"); }
 	}
 	public float Health {
 		get { return health; }
 		private set { health = value; }
 	}
 	public float MaxHealth {
-		get { return maxHealth; }
-		private set { maxHealth = value; }
+		get { return manager.Stat(tag+"MaxHealth"); }
 	}
 	public MapObject TargetObject {
 		get { return targetObject; }
@@ -40,10 +35,7 @@ public class Unit : MapObject {
     
     //Base init method
     protected void UnitInit() {
-    	speed = unitSpeed;
-    	
-    	maxHealth = unitMaxHealth;
-    	health = maxHealth;
+    	health = MaxHealth;
     	
     	targetObject = null;
     	targetPosition = new Vector2(x,y);

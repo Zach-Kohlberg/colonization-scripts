@@ -5,14 +5,8 @@ using System.Collections.Generic;
 
 public class Base : Building {
 	
-	//Inspector fields
-	public float beaconRadius;
-	public float powerPerSec, foodPerSec;
-	
 	//Private fields
 	private Vector2 spawn;
-	private float radius;
-	private float powerRate, foodRate;
 	
 	//Public properties
 	public Vector2 Spawn {
@@ -20,16 +14,13 @@ public class Base : Building {
 		set { spawn = value; }
 	}
 	public float Radius {
-		get { return radius; }
-		private set { radius = value; }
+		get { return manager.Stat(tag+"Radius"); }
 	}
 	public float PowerRate {
-		get { return powerRate; }
-		private set { powerRate = value; }
+		get { return manager.Stat(tag+"PowerRate"); }
 	}
 	public float FoodRate {
-		get { return foodRate; }
-		private set { foodRate = value; }
+		get { return manager.Stat(tag+"FoodRate"); }
 	}
 	new public bool On {
 		get { return on; }
@@ -42,9 +33,6 @@ public class Base : Building {
 	
 	private void BaseInit() {
 		BuildingInit();
-		radius = beaconRadius;
-		powerRate = powerPerSec;
-		foodRate = foodPerSec;
 		tag = "Base";
 		spawn = position + new Vector3(1,0,0);
 	}
@@ -70,7 +58,7 @@ public class Base : Building {
 	
 	private void Update() {
 		//**Tell fog of war to go away within a certain radius
-		if (!manager.SpendFood(foodRate*Time.deltaTime) || !manager.SpendPower(powerRate*Time.deltaTime)) {
+		if (!manager.SpendFood(FoodRate*Time.deltaTime) || !manager.SpendPower(PowerRate*Time.deltaTime)) {
 			//**You lose the game
 		}
 	}

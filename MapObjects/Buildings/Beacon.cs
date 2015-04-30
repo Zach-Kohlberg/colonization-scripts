@@ -3,22 +3,12 @@ using System.Collections;
 
 public class Beacon : Building {
 	
-	//Inspector fields
-	public float beaconRadius;
-	public float powerPerSec;
-	
-	//Private fields
-	private float radius;
-	private float powerRate;
-	
 	//Public properties
 	public float Radius {
-		get { return radius; }
-		private set { radius = value; }
+		get { return manager.Stat(tag+"Radius"); }
 	}
 	public float PowerRate {
-		get { return powerRate; }
-		private set { powerRate = value; }
+		get { return manager.Stat(tag+"PowerRate"); }
 	}
 	
 	private void Awake() {
@@ -27,14 +17,12 @@ public class Beacon : Building {
     
 	private void BeaconInit() {
 		BuildingInit();
-    	radius = beaconRadius;
-    	powerRate = powerPerSec;
     	tag = "Beacon";
     }
     
     private void Update() {
 		if (on) {
-			if (!manager.SpendMass(powerRate*Time.deltaTime)) {
+			if (!manager.SpendMass(PowerRate*Time.deltaTime)) {
 				//**Turn off beacon
 			}
         }

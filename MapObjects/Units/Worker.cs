@@ -2,12 +2,9 @@
 using System.Collections;
 
 public class Worker : Unit {
-    
-	//Inspector fields
-	public int unitCapacity, foodPerSec, minePerSec;
 	
 	//Private fields
-	private float mass, maxMass, foodRate, mineRate;
+	private float mass;
 	private Factory deposit;
 	private GameObject buildingPrefab;
 	private float lastTick;
@@ -18,16 +15,13 @@ public class Worker : Unit {
 		private set { mass = value; }
 	}
 	public float MaxMass {
-		get { return maxMass; }
-		private set { maxMass = value; }
+		get { return manager.Stat(tag+"MaxMass"); }
 	}
 	public float FoodRate {
-		get { return foodRate; }
-		private set { foodRate = value; }
+		get { return manager.Stat(tag+"FoodRate"); }
 	}
 	public float MineRate {
-		get { return mineRate; }
-		private set { mineRate = value; }
+		get { return manager.Stat(tag+"MineRate"); }
 	}
     
     private void Awake() {
@@ -37,9 +31,6 @@ public class Worker : Unit {
 	private void WorkerInit() {
 		UnitInit();
     	mass = 0;
-    	maxMass = unitCapacity;
-    	foodRate = foodPerSec;
-    	mineRate = minePerSec;
     	tag = "Worker";
     	deposit = null;
     	buildingPrefab = null;
@@ -47,23 +38,23 @@ public class Worker : Unit {
     }
     
     private bool Move() {
-    	if (Vector2.Distance(position,targetPosition) <= speed) {
+    	if (Vector2.Distance(position,targetPosition) <= Speed) {
     		position = targetPosition;
     		return false;
     	}
     	else {
-    		position += (Vector3)Vector2.ClampMagnitude(targetPosition - (Vector2)position,speed);
+    		position += (Vector3)Vector2.ClampMagnitude(targetPosition - (Vector2)position,Speed);
     		return true;
     	}
     }
     
     private bool MoveNextTo() {
-		if (Vector2.Distance(position,NextTo(targetPosition)) <= speed) {
+		if (Vector2.Distance(position,NextTo(targetPosition)) <= Speed) {
 			position = NextTo(targetPosition);
 			return false;
 		}
 		else {
-			position += (Vector3)Vector2.ClampMagnitude(targetPosition - (Vector2)position,speed);
+			position += (Vector3)Vector2.ClampMagnitude(targetPosition - (Vector2)position,Speed);
 			return true;
 		}
     }
@@ -109,8 +100,8 @@ public class Worker : Unit {
     			}
     		}
     		else if (!Move()) {
-				mass += (targetObject as MassDeposit).Mine(Mathf.Min(maxMass-mass,mineRate*Time.deltaTime));
-				if (mass >= maxMass) {
+				mass += (targetObject as MassDeposit).Mine(Mathf.Min(MaxMass-mass,MineRate*Time.deltaTime));
+				if (mass >= MaxMass) {
 					deposit = NearestFactory();
 	    			task = "mine-deposit";
 	    			targetPosition = NextTo(deposit.position);
@@ -162,7 +153,7 @@ public class Worker : Unit {
 			PerformTask();
             Debug.Log("Worker Update");
 			if (Time.time > lastTick + 1) {
-				if (!manager.SpendFood(foodRate*Time.deltaTime)) {
+				if (!manager.SpendFood(FoodRate*Time.deltaTime)) {
 					Kill();
 				}
 				lastTick++;

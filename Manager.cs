@@ -1,13 +1,26 @@
 using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
 public class Manager : MonoBehaviour {
 	
-	public float foodStart, powerStart, massStart;
+	//Struct for the inspector
+	[Serializable]
+	public struct Property {
+		public string key;
+		public float value;
+	}
 	
+	//Initial resources
+	public float initMass, initFood, initPower;
+	//Initial stats
+	public Property[] initStats;
+	
+	//Resources
 	private float food, power, mass;
-	private int workerBuildLevel, workerGatherLevel;
+	//Map object stats
+	private Dictionary<string, float> stats;
 	private List<MapObject> mapObjectList;
 	
 	//Public properties
@@ -23,19 +36,16 @@ public class Manager : MonoBehaviour {
 		get { return power; }
 		set { power = value; }
 	}
-	public int WorkerGathererLevel {
-		get { return workerGatherLevel; }
-		set { workerGatherLevel = value; }
-	}
-	public int WorkerBuildLevel {
-		get { return workerBuildLevel; }
-		set { workerBuildLevel = value; }
-	}
 	
 	private void ManagerInit() {
-		food = foodStart;
-		mass = massStart;
-		power = powerStart;
+		food = initFood;
+		mass = initMass;
+		power = initPower;
+		mapObjectList = new List<MapObject>();
+		stats = new Dictionary<string, float>();
+		foreach (Property p in initStats) {
+			stats.Add(p.key, p.value);
+		}
 	}
 	
 	//Returns a list of all objects containing a given tag
@@ -97,6 +107,15 @@ public class Manager : MonoBehaviour {
 			return true;
 		}
 		return false;
+	}
+	
+	public float Stat(string key) {
+		if (stats.ContainsKey(key)) {
+			return stats[key];
+		}
+		else {
+			return 0;
+		}
 	}
 
 	public void addMapObject(Unit m) {
