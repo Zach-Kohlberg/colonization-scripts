@@ -5,7 +5,7 @@ public class Worker : Unit {
 	
 	//Private fields
 	private float mass;
-	private Factory deposit;
+	private MapObject deposit;
 	private GameObject buildingPrefab;
 	private float lastTick;
 	
@@ -59,18 +59,18 @@ public class Worker : Unit {
 		}
     }
     
-    private Factory NearestFactory() {
-    	Factory f = null;
+    private MapObject NearestDepot() {
+    	MapObject depot = null;
 		GameObject[] go = GameObject.FindGameObjectsWithTag("MapObject");
 		foreach (GameObject g in go) {
 			MapObject m = g.GetComponent<MapObject>();
-			if (m.Tag == "Factory") {
-				if (f == null || Vector2.Distance(position,m.position) < Vector2.Distance(position,f.position)) {
-					f = m as Factory;
+			if (m.Tag == "Factory" || m.Tag == "Base") {
+				if (depot == null || Vector2.Distance(position,m.position) < Vector2.Distance(position,depot.position)) {
+					depot = m;
 				}
 			}
 		}
-		return f;
+		return depot;
     }
     
     protected override void TaskSet() {
@@ -93,7 +93,7 @@ public class Worker : Unit {
     	else if (task == "mine") {
 			if (targetObject == null || (targetObject as MassDeposit).Current == 0) {
     			if (mass > 0) {
-    				SetTask("deposit", NearestFactory());
+    				SetTask("deposit", NearestDepot());
     			}
     			else {
     				SetTask("none", position);
@@ -102,7 +102,7 @@ public class Worker : Unit {
     		else if (!Move()) {
 				mass += (targetObject as MassDeposit).Mine(Mathf.Min(MaxMass-mass,MineRate*Time.deltaTime));
 				if (mass >= MaxMass) {
-					deposit = NearestFactory();
+					deposit = NearestDepot();
 	    			task = "mine-deposit";
 	    			targetPosition = NextTo(deposit.position);
     			}
@@ -113,7 +113,12 @@ public class Worker : Unit {
 				SetTask("none", position);
 			}
     		else if (!Move()) {
-				(deposit as Factory).DepositMass(mass);
+				if (targetObject.Tag == "Factory") {
+					(targetObject as Factory).DepositMass(mass);
+				}
+				else {
+					(targetObject as Base).DepositMass(mass);
+				}
 				mass = 0;
 				task = "mine";
 				if (targetObject == null) {
@@ -129,7 +134,12 @@ public class Worker : Unit {
 				SetTask("none", position);
 			}
 			else if (!Move()) {
-				(targetObject as Factory).DepositMass(mass);
+				if (targetObject.Tag == "Factory") {
+					(targetObject as Factory).DepositMass(mass);
+				}
+				else {
+					(targetObject as Base).DepositMass(mass);
+				}
 				mass = 0;
 				SetTask("none", position);
     		}
