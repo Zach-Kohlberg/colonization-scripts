@@ -4,10 +4,10 @@ using System.Collections;
 public class Worker : Unit {
     
 	//Inspector fields
-	public int unitCapacity, foodPerSec;
+	public int unitCapacity, foodPerSec, minePerSec;
 	
 	//Private fields
-	private float mass, maxMass, foodRate;
+	private float mass, maxMass, foodRate, mineRate;
 	private Factory deposit;
 	private GameObject buildingPrefab;
 	private float lastTick;
@@ -25,6 +25,10 @@ public class Worker : Unit {
 		get { return foodRate; }
 		private set { foodRate = value; }
 	}
+	public float MineRate {
+		get { return mineRate; }
+		private set { mineRate = value; }
+	}
     
     private void Awake() {
         WorkerInit();
@@ -35,6 +39,7 @@ public class Worker : Unit {
     	mass = 0;
     	maxMass = unitCapacity;
     	foodRate = foodPerSec;
+    	mineRate = minePerSec;
     	tag = "Worker";
     	deposit = null;
     	buildingPrefab = null;
@@ -104,10 +109,12 @@ public class Worker : Unit {
     			}
     		}
     		else if (!Move()) {
-				mass += (targetObject as MassDeposit).Mine(maxMass-mass);
-				deposit = NearestFactory();
-    			task = "mine-deposit";
-    			targetPosition = NextTo(deposit.position);
+				mass += (targetObject as MassDeposit).Mine(Mathf.Min(maxMass-mass,mineRate*Time.deltaTime));
+				if (mass >= maxMass) {
+					deposit = NearestFactory();
+	    			task = "mine-deposit";
+	    			targetPosition = NextTo(deposit.position);
+    			}
     		}
     	}
     	else if (task == "mine-deposit") {
@@ -156,7 +163,7 @@ public class Worker : Unit {
             Debug.Log("Worker Update");
 			if (Time.time > lastTick + 1) {
 				if (!manager.SpendFood(foodRate*Time.deltaTime)) {
-					//Kill();
+					Kill();
 				}
 				lastTick++;
 			}
