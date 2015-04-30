@@ -10,7 +10,7 @@ public class ActionBarButtonsScript : MonoBehaviour {
     public bool building = false;
     private Manager manager;
 
-    private int cost = 0;
+    private float cost = 0;
 
     void Awake()
     {

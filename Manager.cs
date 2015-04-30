@@ -91,7 +91,7 @@ public class Manager : MonoBehaviour {
 	}
 	
 	//Return the cost to create a specific unit or building
-	public int GetCost(string tag) {
+	public float GetCost(string tag) {
 		if (costs.ContainsKey(tag)) {
 			return costs[tag];
 		}
