@@ -24,13 +24,13 @@ public class Factory : Building {
     	spawn = position + new Vector3(1,0,0);
     }
     
-    public void DepositMass(int amount) {
+    public void DepositMass(float amount) {
     	manager.AddMass(amount);
     }
     
 	public void SpawnUnit(GameObject unit) {
 		Unit u = (Instantiate(unit) as GameObject).GetComponent<Unit>();
-		if (manager.SpendMass(manager.GetCost(u.Tag)) != 0) {
+		if (manager.SpendMass(manager.GetCost(u.Tag))) {
 			u.position = position;
 			u.SetTask("move", spawn);
 		}

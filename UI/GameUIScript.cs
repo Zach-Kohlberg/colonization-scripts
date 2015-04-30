@@ -60,9 +60,9 @@ public class GameUIScript : MonoBehaviour {
     {
         if (manager != null)
         {
-            header_Resource1Text.text = "Mass: " + manager.getMass();
-            header_Resource2Text.text = "Food: " + manager.getFood();
-            header_Resource3Text.text = "Power: " + manager.getPower();
+            header_Resource1Text.text = "Mass: " + manager.Mass;
+			header_Resource2Text.text = "Food: " + manager.Food;
+            header_Resource3Text.text = "Power: " + manager.Power;
             
             //header_Resource3Text.text = "Eneger: " + manager.get
         }

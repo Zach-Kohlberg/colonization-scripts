@@ -1,143 +1,168 @@
 using UnityEngine;
+<<<<<<< HEAD
+=======
+using System;
+>>>>>>> origin/master
 using System.Collections;
 using System.Collections.Generic;
 
 public class Manager : MonoBehaviour {
-	private int food = 0, mass = 0, power = 0, beacons =0, factories =0, farms =0, workers =0, workerBuildLevel = 1, workerGatherLevel = 1;
-	private List<GameObject> workersList, beaconsList, factoriesList, farmsList;
-	// Use this for initialization
-	void Start () {
-		
+	
+	//Structs for the inspector
+	[Serializable]
+	public struct Property {
+		public string key;
+		public float value;
+	}
+	[Serializable]
+	public struct Prefab {
+		public string key;
+		public GameObject value;
 	}
 	
-	// Update is called once per frame
-	void Update () {
-		
+	//Initial resources
+	public float initMass, initFood, initPower;
+	//Initial stats
+	public Property[] initStats;
+	//Prefab list
+	public Prefab[] initPrefabs;
+	//Cost list
+	public Property[] initCosts;
+	
+	//Resources
+	private float food, power, mass;
+	//Add objects in the game
+	private List<MapObject> mapObjectList;
+	//Map object stats
+	private Dictionary<string, float> stats;
+	//Map object prefabs
+	private Dictionary<string, GameObject> prefabs;
+	//Unit and building costs
+	private Dictionary<string, float> costs;
+	
+	//Public properties
+	public float Food {
+		get { return food; }
+		set { food = value; }
+	}
+	public float Mass {
+		get { return mass; }
+		set { mass = value; }
+	}
+	public float Power {
+		get { return power; }
+		set { power = value; }
+	}
+	
+	private void ManagerInit() {
+		food = initFood;
+		mass = initMass;
+		power = initPower;
+		mapObjectList = new List<MapObject>();
+		stats = new Dictionary<string, float>();
+		foreach (Property p in initStats) {
+			stats.Add(p.key, p.value);
+		}
+		prefabs = new Dictionary<string, GameObject>();
+		foreach (Prefab p in initPrefabs) {
+			prefabs.Add(p.key, p.value);
+		}
+		costs = new Dictionary<string, float>();
+		foreach (Property c in initCosts) {
+			costs.Add(c.key, c.value);
+		}
+	}
+	
+	//Returns a list of all objects containing a given tag
+	public List<MapObject> FilterType(string type) {
+		List<MapObject> l = new List<MapObject>();
+		foreach (MapObject m in mapObjectList) {
+			if (m.Type == type) {
+				l.Add(m);
+			}
+		}
+		return l;
+	}
+	public List<MapObject> FilterTag(string tag) {
+		List<MapObject> l = new List<MapObject>();
+		foreach (MapObject m in mapObjectList) {
+			if (m.Tag == tag) {
+				l.Add(m);
+			}
+		}
+		return l;
 	}
 	
 	//Return the cost to create a specific unit or building
-	public int GetCost(string obj) {
-		return 100;
+	public float GetCost(string tag) {
+		if (costs.ContainsKey(tag)) {
+			return costs[tag];
+		}
+		else {
+			return Int32.MaxValue;
+		}
 	}
 	
-	public void AddMass(int n) {
+	//Return a prefab for the map object that we're building
+	public GameObject GetPrefab(string tag) {
+		if (prefabs.ContainsKey(tag)) {
+			return prefabs[tag];
+		}
+		else {
+			return null;
+		}
+	}
+	
+	public void AddMass(float n) {
 		mass += n;
 	}
 	
-	public void AddFood(int n) {
+	public void AddFood(float n) {
 		food += n;
 	}
 	
-	public void AddPower(int n) {
+	public void AddPower(float n) {
 		power += n;
 	}
 	
-	public int SpendMass(int n) {
+	public bool SpendMass(float n) {
 		if (mass >= n) {
 			mass -= n;
-			return n;
+			return true;
 		}
-		else {
-			return 0;
-		}
+		return false;
 	}
 	
-	public int SpendFood(int n) {
+	public bool SpendFood(float n) {
 		if (food >= n) {
 			food -= n;
-			return n;
+			return true;
 		}
-		else {
-			return 0;
-		}
+		return false;
 	}
 	
-	public int SpendPower(int n) {
+	public bool SpendPower(float n) {
 		if (power >= n) {
 			power -= n;
-			return n;
+			return true;
+		}
+		return false;
+	}
+	
+	public float Stat(string key) {
+		if (stats.ContainsKey(key)) {
+			return stats[key];
 		}
 		else {
 			return 0;
 		}
 	}
-	//getters
-	public int getFood() {
-		return food;
-	}
 
-    public int getPower()
-    {
-        return power;
-    }
-
-	public int getMass() {
-		return mass;
+	public void AddMapObject(MapObject m) {
+		mapObjectList.Add(m);
 	}
-
-	public int getBeacons() {
-		return beacons;
-	}
-
-	public int getFactories() {
-		return factories;
-	}
-
-	public int getFarms() {
-		return farms;
-	}
-
-	public int getWorkers() {
-		return workers;
-	}
-
-	public int getWorkerGatherLevel() {
-		return workerGatherLevel;
-	}
-
-	public int getWorkerBuildLeve() {
-		return workerBuildLevel;
-	}
-	//setters
-	public void setFood(int food) {
-		this.food = food;
-	}
-	public void setMass(int mass) {
-		this.mass = mass;
-	}
-	public void setBeacons(int beacons) {
-		this.beacons = beacons;
-	}
-	public void setFactories(int factories) {
-		this.factories = factories;
-	}
-	public void setFarms(int farms) {
-		this.farms = farms;
-	}
-	public void setWorkers(int workers) {
-		this.workers = workers;
-	}
-	public void setWorkerBuildLevel(int workerBuildLevel) {
-		this.workerBuildLevel = workerBuildLevel;
-	}
-	public void setWorkerGatherLevel(int workerGatherLevel) {
-		this.workerGatherLevel = workerGatherLevel;
-	}
-	//adders
-	public void addWorker(GameObject worker) {
-		workersList [workers] = worker;
-		setWorkers (getWorkers ()+ 1);
-	}
-	public void addBeacon(GameObject beacon) {
-		beaconsList [beacons] = beacon;
-		setBeacons (getBeacons ()+ 1);
-	}
-	public void addFactory(GameObject factory) {
-		factoriesList [factories] = factory;
-		setFactories (getFactories ()+ 1);
-	}
-	public void addFarm(GameObject farm) {
-		farmsList [farms] = farm;
-		setFarms (getFarms ()+ 1);
+	
+	public void RemoveMapObject(MapObject m) {
+		mapObjectList.Remove(m);
 	}
 }

@@ -5,14 +5,8 @@ using System.Collections.Generic;
 
 public class Base : Building {
 	
-	//Inspector fields
-	public float beaconRadius;
-	public int powerPerTick, foodPerTick;
-	
 	//Private fields
 	private Vector2 spawn;
-	private float radius;
-	private int powerRate, foodRate;
 	
 	//Public properties
 	public Vector2 Spawn {
@@ -20,16 +14,13 @@ public class Base : Building {
 		set { spawn = value; }
 	}
 	public float Radius {
-		get { return radius; }
-		private set { radius = value; }
+		get { return manager.Stat(tag+"Radius"); }
 	}
-	public int PowerRate {
-		get { return powerRate; }
-		private set { powerRate = value; }
+	public float PowerRate {
+		get { return manager.Stat(tag+"PowerRate"); }
 	}
-	public int FoodRate {
-		get { return foodRate; }
-		private set { foodRate = value; }
+	public float FoodRate {
+		get { return manager.Stat(tag+"FoodRate"); }
 	}
 	new public bool On {
 		get { return on; }
@@ -42,9 +33,6 @@ public class Base : Building {
 	
 	private void BaseInit() {
 		BuildingInit();
-		radius = beaconRadius;
-		powerRate = powerPerTick;
-		foodRate = foodPerTick;
 		tag = "Base";
 		spawn = position + new Vector3(1,0,0);
 	}
@@ -59,7 +47,7 @@ public class Base : Building {
 	
 	public void SpawnUnit(GameObject unit) {
 		Unit u = (Instantiate(unit) as GameObject).GetComponent<Unit>();
-		if (manager.SpendMass(manager.GetCost(u.Tag)) != 0) {
+		if (manager.SpendMass(manager.GetCost(u.Tag))) {
 			u.position = position;
 			u.SetTask("move", spawn);
 		}
@@ -70,7 +58,7 @@ public class Base : Building {
 	
 	private void Update() {
 		//**Tell fog of war to go away within a certain radius
-		if (manager.SpendFood(foodRate) == 0 || manager.SpendPower(powerRate) == 0) {
+		if (!manager.SpendFood(FoodRate*Time.deltaTime) || !manager.SpendPower(PowerRate*Time.deltaTime)) {
 			//**You lose the game
 		}
 	}

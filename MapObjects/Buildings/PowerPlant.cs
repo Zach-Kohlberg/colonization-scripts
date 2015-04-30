@@ -3,21 +3,12 @@ using System.Collections;
 
 public class PowerPlant : Building {
 	
-	//Inspector fields
-	public int massPerTick, powerPerTick;
-	
-	//Private fields
-	private int massRate, powerRate;
-	private float lastTick;
-	
 	//Public properties
-	public int MassRate {
-		get { return massRate; }
-		private set { massRate = value; }
+	public float MassRate {
+		get { return manager.Stat(tag+"MassRate"); }
 	}
-	public int PowerRate {
-		get { return powerRate; }
-		private set { powerRate = value; }
+	public float PowerRate {
+		get { return manager.Stat(tag+"PowerRate"); }
 	}
 	
 	private void Awake() {
@@ -26,19 +17,13 @@ public class PowerPlant : Building {
     
 	private void PowerPlantInit() {
 		BuildingInit();
-		powerRate = powerPerTick;
-		massRate = massPerTick;
     	tag = "PowerPlant";
-    	lastTick = Time.time;
     }
     
     private void Update() {
 		if (on) {
-			if (Time.time > lastTick + 1) {
-				if (manager.SpendMass(massRate) > 0) {
-					manager.AddFood(powerRate);
-				}
-				lastTick++;
+			if (manager.SpendMass(MassRate*Time.deltaTime)) {
+				manager.AddFood(PowerRate*Time.deltaTime);
 			}
 		}
     }
