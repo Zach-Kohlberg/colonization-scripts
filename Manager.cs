@@ -194,8 +194,4 @@ public class Manager : MonoBehaviour {
 	public void RemoveMapObject(MapObject m) {
 		mapObjectList.Remove(m);
 	}
-
-    public Type GetType(string tag) {
-    	return 
-    }
 }
