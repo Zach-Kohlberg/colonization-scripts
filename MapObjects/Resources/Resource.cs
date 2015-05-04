@@ -4,26 +4,27 @@ using System.Collections;
 public class Resource : MapObject {
 	
 	//Inspector fields
-	public int maxResource, initialResource;
+	public float maxResource, initialResource;
 	
 	//Private fields
-	protected int current, max;
+	protected float current, max;
 	
 	//Public properties
-	public int Max {
+	public float Max {
 		get { return max; }
 		private set { max = value; }
 	}
-	public int Current {
+	public float Current {
 		get { return current; }
 		private set { current = value; }
 	}
     
     //Base init method
     protected void ResourceInit() {
+        MapObjectInit();
     	current = Mathf.Min(initialResource,maxResource);
     	max = maxResource;
     	
-		MapObjectInit();
+		
     }
 }

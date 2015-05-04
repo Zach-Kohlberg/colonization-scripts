@@ -12,7 +12,7 @@ public class GameUIScript : MonoBehaviour {
     public Image selectedImage;
     public GameObject selectedPanel, actionBar, selected_worker, selected_Beacon, selected_Factory, selected_Farm, selected_PowerPlant, selected_ResourceDeposit, action_worker, action_Beacon, action_Factory, action_Farm, action_Powerplant;
     public Button action_CancelButton;//the button used to cancel an action
-
+    public HoverTextScript hts;//the hovertext script
     public GameObject prefabWorker, prefabBeacon, prefabFactory, prefabFarm, prefabPowerPlant;//these are the objects that will be built by units
 
     private List<GameObject> selectedMapObjectPanels, selectedActionBar;
@@ -47,6 +47,7 @@ public class GameUIScript : MonoBehaviour {
 
         Debug.Log("Selected Images has a size of: " + selectedImages.Count);
 
+        action_CancelButton.interactable = false;
         actionBar.SetActive(false);
         selectedPanel.SetActive(false);
         selectedMapObjectPanels = new List<GameObject>();
@@ -60,9 +61,9 @@ public class GameUIScript : MonoBehaviour {
     {
         if (manager != null)
         {
-            header_Resource1Text.text = "Mass: " + manager.Mass;
-			header_Resource2Text.text = "Food: " + manager.Food;
-            header_Resource3Text.text = "Power: " + manager.Power;
+            header_Resource1Text.text = "Mass: " + (int) manager.Mass;
+			header_Resource2Text.text = "Food: " + (int) manager.Food;
+            header_Resource3Text.text = "Power: " + (int) manager.Power;
             
             //header_Resource3Text.text = "Eneger: " + manager.get
         }
@@ -274,6 +275,7 @@ public class GameUIScript : MonoBehaviour {
             else if(mouseClick == 1)
             {
                 clickedAction = " ";
+                hts.Text_Clear(true);
                 action_CancelButton.interactable = false;
                 last_clickedButton.interactable = true;
             }
@@ -555,6 +557,7 @@ public class GameUIScript : MonoBehaviour {
                 {
                     //nothing here because workers do not currently have a way to stop
                     (currentMO as Worker).SetTask("none", currentMO);
+                    UICancelAction();
                 }
             }
             else if(clickedAction == "workerKill")
@@ -564,13 +567,19 @@ public class GameUIScript : MonoBehaviour {
                     //kill the current worker
                     currentMO.Kill();
                     currentMO = null;
+                    UICancelAction();
                     SelectedPanelUpdate();
+                    //the ui should now be turned off since the currentmo is null.
+                    //so set the insideui val to false
+                    InsideUI(false);
+
                 }
             }
             else if (clickedAction == "Cancel")
             {
 
                 UICancelAction();
+                hts.Text_Clear(true);
                 
             }
             else if (clickedAction == "factoryConstructWorker")
@@ -586,6 +595,9 @@ public class GameUIScript : MonoBehaviour {
                 //since there are currently no other options...
                 //make the clicked button un-interactable
                 btn.interactable = false;
+                //Debug.LogWarning("Get Componenet: ActionBarButtonScript " + btn.gameObject);
+                //Debug.Log(btn.gameObject.GetComponent<ActionBarButtonsScript>());
+                hts.Text_Set(btn.gameObject.GetComponent<ActionBarButtonsScript>().ClickedHoverText(),true);
                 last_clickedButton = btn;
                 action_CancelButton.interactable = true;
                 clickedUIActionButton = true;
@@ -613,6 +625,7 @@ public class GameUIScript : MonoBehaviour {
         action_CancelButton.interactable = false;
         clickedAction = " ";
         clickedUIActionButton = false;
+        hts.Text_Clear(true);
         //make the recently clicked button interactable again.
         if (last_clickedButton != null)
         {

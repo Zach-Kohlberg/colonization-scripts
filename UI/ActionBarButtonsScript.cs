@@ -4,13 +4,14 @@ using UnityEngine.UI;
 
 public class ActionBarButtonsScript : MonoBehaviour {
 
-    public Text actionbarHoverText, costText;
-    public string actionBarTextInfo;
-    public GameObject buildingPrefab;
-    public bool building = false;
+    public Text costText;
+    public string mapobjectTag, actionBarTextInfo;
+    //public GameObject buildingPrefab;
+    public bool building = false, worker = false, cancelButton = false;
+    public HoverTextScript hts;
     private Manager manager;
 
-    private int cost = 0;
+    private float cost = 0;
 
     void Awake()
     {
@@ -25,13 +26,18 @@ public class ActionBarButtonsScript : MonoBehaviour {
         if (building)
         {
             Debug.Log("building prefab is not null");
-            cost = manager.GetCost(buildingPrefab.GetComponent<MapObject>().Tag);
+            cost = manager.GetCost(mapobjectTag);
+        }
+        if (worker)
+        {
+            Debug.Log("worker is not null");
+            cost = manager.GetCost(mapobjectTag);
         }
 	}
 	
 	// Update is called once per frame
 	void Update () {
-        if (building)
+        if (building || worker)
         {
             if (manager.Mass < cost)
             {
@@ -47,8 +53,8 @@ public class ActionBarButtonsScript : MonoBehaviour {
     public void ActionBarMouseIn()
     {
         Debug.Log("Hovering");
-        actionbarHoverText.text = actionBarTextInfo;
-        if (buildingPrefab != null)
+        hts.Text_Set(actionBarTextInfo);
+        if (cost != 0)
         {
             costText.text = "Cost\n" + cost.ToString();
         }
@@ -56,7 +62,21 @@ public class ActionBarButtonsScript : MonoBehaviour {
 
     public void ActionBarMouseOut()
     {
-        actionbarHoverText.text = " ";
-        costText.text = " ";
+        if (gameObject.GetComponent<Button>().interactable || cancelButton)
+        {
+            hts.Text_Clear();
+            costText.text = " ";
+        }
+       
+        
+    }
+
+    /// <summary>
+    /// Return the hovertext
+    /// </summary>
+    /// <returns></returns>
+    public string ClickedHoverText()
+    {
+        return actionBarTextInfo;
     }
 }

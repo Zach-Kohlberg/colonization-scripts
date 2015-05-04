@@ -1,135 +1,211 @@
 using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
 public class Manager : MonoBehaviour {
-
-
-
-	private int food = 100, power = 0, mass = 0, beacons =0, factories =0, farms =0, workers =0, workerBuildLevel = 1, workerGatherLevel = 1;
-	private List<GameObject> workersList, beaconsList, factoriesList, farmsList;
-
-	public void addMass(int n) {
-		Mass = Mass + n;
-	}
-
-	public int spendMass(int n) {
-		if (Mass >= n) {
-			Mass = Mass - n;
-			return n;
-		}
-		else {
-			return 0;
-		}
-	}
-
 	
-	//Return the cost to create a specific unit or building
-	public int GetCost(string obj) {
-		return 100;
+	//Structs for the inspector
+	[Serializable]
+	public struct Property {
+		public string key;
+		public float value;
+	}
+	[Serializable]
+	public struct Prefab {
+		public string key;
+		public GameObject value;
 	}
 	
-	public void AddMass(int n) {
-		mass += n;
-	}
+	//Initial resources
+	public float initMass, initFood, initPower;
+	//Initial stats
+	public Property[] initStats;
+	//Prefab list
+	public Prefab[] initPrefabs;
+	//Cost list
+	public Property[] initCosts;
 	
-	public void AddFood(int n) {
-		food += n;
-	}
+	//Resources
+	private float food, power, mass;
+	//Add objects in the game
+	private List<MapObject> mapObjectList;
+	//Map object stats
+	private Dictionary<string, float> stats;
+	//Map object prefabs
+	private Dictionary<string, GameObject> prefabs;
+	//Unit and building costs
+	private Dictionary<string, float> costs;
 	
-	public void AddPower(int n) {
-		power += n;
-	}
-	
-	public int SpendMass(int n) {
-		if (mass >= n) {
-			mass -= n;
-			return n;
-		}
-		else {
-			return 0;
-		}
-	}
-	
-	public int SpendFood(int n) {
-		if (food >= n) {
-			food -= n;
-			return n;
-		}
-		else {
-			return 0;
-		}
-	}
-	
-	public int SpendPower(int n) {
-		if (power >= n) {
-			power -= n;
-			return n;
-		}
-		else {
-			return 0;
-		}
-	}
-
-	public int Food {
+	//Public properties
+	public float Food {
 		get { return food; }
 		set { food = value; }
 	}
-
-	public int Mass {
+	public float Mass {
 		get { return mass; }
 		set { mass = value; }
 	}
-
-	public int Beacons {
-		get { return beacons; }
-		set { beacons = value; }
-	}
-
-	public int Factories {
-		get { return factories; }
-		set { factories = value; }
-	}
-
-	public int Farms {
-		get { return farms; }
-		set { farms = value; }
-	}
-
-	public int Power {
+	public float Power {
 		get { return power; }
 		set { power = value; }
 	}
 
-	public int Workers {
-		get { return workers; }
-		set { workers = value; }
+    private void Awake()
+    {
+        ManagerInit();
+    }
+
+	private void ManagerInit() {
+		food = initFood;
+		mass = initMass;
+		power = initPower;
+		mapObjectList = new List<MapObject>();
+		stats = new Dictionary<string, float>();
+		foreach (Property p in initStats) {
+			stats.Add(p.key, p.value);
+		}
+		prefabs = new Dictionary<string, GameObject>();
+		foreach (Prefab p in initPrefabs) {
+			prefabs.Add(p.key, p.value);
+		}
+		costs = new Dictionary<string, float>();
+        Debug.LogWarning("ManagerInit");
+		foreach (Property c in initCosts) {
+			costs.Add(c.key, c.value);
+            Debug.LogWarning(c.key + " and " + c.value);
+		}
+	}
+	
+	//Returns a list of all objects containing a given tag
+	public List<MapObject> FilterType(string type) {
+		List<MapObject> l = new List<MapObject>();
+		foreach (MapObject m in mapObjectList) {
+			if (m.Type == type) {
+				l.Add(m);
+			}
+		}
+		return l;
+	}
+	public List<MapObject> FilterTag(string tag) {
+		List<MapObject> l = new List<MapObject>();
+		foreach (MapObject m in mapObjectList) {
+			if (m.Tag == tag) {
+				l.Add(m);
+			}
+		}
+		return l;
+	}
+	
+	//Return the cost to create a specific unit or building
+	public float GetCost(string tag) {
+		if (costs.ContainsKey(tag)) {
+            Debug.LogWarning(costs[tag]);
+			return costs[tag];
+		}
+		else {
+            Debug.LogWarning("Could not Find a cost for the building: " + tag);
+			return Int32.MaxValue;
+		}
+	}
+	
+	//Return a prefab for the map object that we're building
+	public GameObject GetPrefab(string tag) {
+		if (prefabs.ContainsKey(tag)) {
+			return prefabs[tag];
+		}
+		else {
+			return null;
+		}
+	}
+	
+	//Return the total rate of production - consumption for a resource
+	public float GetTotalRate(string n) {
+		float r = 0;
+		switch (n) {
+			case "Mass":
+				foreach (MapObject m in mapObjectList) {
+					if (m.FoodRate < 9999) {
+						r += m.MassRate;
+					}
+				}
+			break;
+			case "Food":
+				foreach (MapObject m in mapObjectList) {
+					if (m.FoodRate < 9999) {
+						r += m.FoodRate;
+					}
+				}
+				break;
+			case "Power":
+				foreach (MapObject m in mapObjectList) {
+					if (m.FoodRate < 9999) {
+						r += m.PowerRate;
+					}
+				}
+				break;
+		}
+		return r;
+	}
+	
+	public void AddMass(float n) {
+		mass += n;
+	}
+	
+	public void AddFood(float n) {
+		food += n;
+	}
+	
+	public void AddPower(float n) {
+		power += n;
+	}
+	
+	public bool SpendMass(float n) {
+		if (mass >= n) {
+			mass -= n;
+			return true;
+		}
+		return false;
+	}
+	
+	public bool SpendFood(float n) {
+		if (food >= n) {
+			food -= n;
+			return true;
+		}
+		return false;
+	}
+	
+	public bool SpendPower(float n) {
+		if (power >= n) {
+			power -= n;
+			return true;
+		}
+		return false;
+	}
+	
+	public float Stat(string key) {
+		if (stats.ContainsKey(key)) {
+			return stats[key];
+		}
+		else {
+			return 0;
+		}
 	}
 
-	public int WorkerGathererLevel {
-		get { return workerGatherLevel; }
-		set { workerGatherLevel = value; }
+	public void AddMapObject(MapObject m) {
+		mapObjectList.Add(m);
+	}
+	
+	public void RemoveMapObject(MapObject m) {
+		mapObjectList.Remove(m);
 	}
 
-	public int WorkerBuildLevel {
-		get { return workerBuildLevel; }
-		set { workerBuildLevel = value; }
-	}
-
-	public void addWorker(GameObject worker) {
-		workersList [Workers] = worker;
-		Workers = Workers + 1;
-	}
-	public void addBeacon(GameObject beacon) {
-		beaconsList [Beacons] = beacon;
-		Beacons = Beacons + 1;
-	}
-	public void addFactory(GameObject factory) {
-		factoriesList [Factories] = factory;
-		Factories = Factories + 1;
-	}
-	public void addFarm(GameObject farm) {
-		farmsList [Farms] = farm;
-		Farms = Farms + 1;
-	}
+    void Update()
+    {
+        //if (Input.GetButtonUp(KeyCode.T))
+        //{
+        //    cost
+        //}
+    }
 }
