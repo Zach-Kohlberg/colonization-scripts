@@ -19,7 +19,7 @@ public class SelectedBuilding : UISelected {
         {
             Beacon b = GetSelected().GetComponent<Beacon>();
             //radius
-            resourceProduction.text = "-" + b.PowerRate.ToString();
+            resourceProduction.text =/* "-" + */b.PowerRate.ToString();
             //power consumed per second
             resourceConsumption.text = b.Radius.ToString();
         }
@@ -36,7 +36,7 @@ public class SelectedBuilding : UISelected {
         {
             Farm f = GetSelected().GetComponent<Farm>();
             //consuming mass
-            resourceConsumption.text = "-" + f.MassRate.ToString();
+            resourceConsumption.text =/* "-" + */f.MassRate.ToString();
             //producing food
             resourceProduction.text = "+" + f.FoodRate.ToString();
         }
@@ -44,7 +44,7 @@ public class SelectedBuilding : UISelected {
         {
             PowerPlant p = GetSelected().GetComponent<PowerPlant>();
             //consume mass
-            resourceConsumption.text = "-" + p.MassRate.ToString();
+            resourceConsumption.text =/* "-" + */p.MassRate.ToString();
             //produce power
             resourceProduction.text = "+" + p.PowerRate.ToString();
         }
