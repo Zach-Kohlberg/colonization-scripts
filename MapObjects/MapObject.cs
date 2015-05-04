@@ -10,6 +10,7 @@ public class MapObject : MonoBehaviour {
 	new protected string tag;
 	protected bool on;
 	protected Manager manager;
+	protected SelectDisplay display;
 	
 	//Public properties
 	public string Tag {
@@ -48,6 +49,9 @@ public class MapObject : MonoBehaviour {
 	public float PowerRate {
 		get { return 10000; }
 	}
+	public SelectDisplay Display {
+		get { return display; }
+	}
 	
 	//Base init method for map objects
 	protected void MapObjectInit() {
@@ -55,6 +59,7 @@ public class MapObject : MonoBehaviour {
 		z = 0;
 		manager = GameObject.Find("Manager").GetComponent<Manager>();
 		manager.AddMapObject(this);
+		display = GetComponent<SelectDisplay>();
 	}
 	
 	public static string TagType(string t) {
