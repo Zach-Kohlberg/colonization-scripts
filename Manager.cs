@@ -122,33 +122,27 @@ public class Manager : MonoBehaviour {
 	//Return the total rate of production - consumption for a resource
 	public float GetTotalRate(string n) {
 		float r = 0;
-		switch (n) {
-			case "Mass":
-				foreach (MapObject m in mapObjectList) {
-					if (m.FoodRate < 9999) {
-						r += m.MassRate;
-					}
-				}
-			break;
-			case "Food":
-				foreach (MapObject m in mapObjectList) {
-					if (m.FoodRate < 9999) {
-						r += m.FoodRate;
-					}
-				}
-				break;
-			case "Power":
-				foreach (MapObject m in mapObjectList) {
-					if (m.FoodRate < 9999) {
-						r += m.PowerRate;
-					}
-				}
-				break;
+		foreach (MapObject m in mapObjectList) {
+			float rate = 0;
+			switch (n) {
+				case "Mass":
+					rate = m.MassRate;
+					break;
+				case "Food":
+					rate = m.FoodRate;
+					break;
+				case "Power":
+					rate = m.PowerRate;
+                    break;
+			}
+			if (rate < 9999) {
+				r += rate;
+			}
 		}
 		return r;
-	}
-	
-	public void AddMass(float n) {
+    }
+    
+    public void AddMass(float n) {
 		mass += n;
 	}
 	
@@ -201,11 +195,7 @@ public class Manager : MonoBehaviour {
 		mapObjectList.Remove(m);
 	}
 
-    void Update()
-    {
-        //if (Input.GetButtonUp(KeyCode.T))
-        //{
-        //    cost
-        //}
+    public Type GetType(string tag) {
+    	return 
     }
 }
