@@ -10,8 +10,8 @@ public class SelectDisplay : MonoBehaviour {
 		SelectIcon.transform.GetChild(0).GetComponent<MeshRenderer> ().enabled = false;
 	}
 
-	public void ToggleDisplay() {
-		on = !on;
+	public void ToggleDisplay(bool o) {
+        on = o;
 
 		if (on) 
 			SelectIcon.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = true;
@@ -30,8 +30,8 @@ public class SelectDisplay : MonoBehaviour {
 
 		//For testing purposes only
 
-		if (Input.GetKeyDown (KeyCode.K))
-			ToggleDisplay ();
+        //if (Input.GetKeyDown (KeyCode.K))
+        //    ToggleDisplay ();
 
 		//SelectIcon.transform.localScale = transform.localScale;
 

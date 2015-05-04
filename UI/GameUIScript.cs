@@ -10,7 +10,7 @@ public class GameUIScript : MonoBehaviour {
     public float panSpeed = 2f;//how quickly should the camera move?
     public Text selectedObjectNameType, header_Resource1Text, header_Resource2Text, header_Resource3Text;
     public Image selectedImage;
-    public GameObject selectedPanel, actionBar, selected_worker, selected_Beacon, selected_Factory, selected_Farm, selected_PowerPlant, selected_ResourceDeposit, action_worker, action_Beacon, action_Factory, action_Farm, action_Powerplant;
+    public GameObject selectedPanel, actionBar, selected_worker, selected_Beacon, selected_Factory, selected_Farm, selected_PowerPlant, selected_ResourceDeposit, selected_Base, action_worker, action_Beacon, action_Factory, action_Farm, action_Powerplant, action_Base;
     public Button action_CancelButton;//the button used to cancel an action
     public HoverTextScript hts;//the hovertext script
     //public GameObject prefabWorker, prefabBeacon, prefabFactory, prefabFarm, prefabPowerPlant;//these are the objects that will be built by units
@@ -52,8 +52,8 @@ public class GameUIScript : MonoBehaviour {
         selectedPanel.SetActive(false);
         selectedMapObjectPanels = new List<GameObject>();
         selectedActionBar = new List<GameObject>();
-        selectedMapObjectPanels.Add(selected_worker); selectedMapObjectPanels.Add(selected_Beacon); selectedMapObjectPanels.Add(selected_Factory); selectedMapObjectPanels.Add(selected_Farm); selectedMapObjectPanels.Add(selected_PowerPlant); selectedMapObjectPanels.Add(selected_ResourceDeposit);
-        selectedActionBar.Add(action_Beacon); selectedActionBar.Add(action_Factory); selectedActionBar.Add(action_Farm); selectedActionBar.Add(action_Powerplant); selectedActionBar.Add(action_worker);  
+        selectedMapObjectPanels.Add(selected_worker); selectedMapObjectPanels.Add(selected_Base); selectedMapObjectPanels.Add(selected_Beacon); selectedMapObjectPanels.Add(selected_Factory); selectedMapObjectPanels.Add(selected_Farm); selectedMapObjectPanels.Add(selected_PowerPlant); selectedMapObjectPanels.Add(selected_ResourceDeposit);
+        selectedActionBar.Add(action_Beacon); selectedActionBar.Add(action_Factory); selectedActionBar.Add(action_Base); selectedActionBar.Add(action_Farm); selectedActionBar.Add(action_Powerplant); selectedActionBar.Add(action_worker);  
 	}
 	
 	// Update is called once per frame
@@ -109,6 +109,10 @@ public class GameUIScript : MonoBehaviour {
                         //if it was a left click, keep/make it null
                         if (mouseClick == 0)
                         {
+                            if (currentMO != null)
+                            {
+                                currentMO.Display.ToggleDisplay(false);
+                            }
                             currentMO = null;
                             //update the panel and actionbar.
                             SelectedPanelUpdate();
@@ -132,6 +136,10 @@ public class GameUIScript : MonoBehaviour {
                                     //set the spawn position of the factory
                                     currentMO.GetComponent<Factory>().Spawn = position;
                                 }
+                                else if (currentMO.Tag == "Base")
+                                {
+                                    currentMO.GetComponent<Base>().Spawn = position;
+                                }
                             }
 
                         }
@@ -151,7 +159,12 @@ public class GameUIScript : MonoBehaviour {
                             //if it was a left click, change the selected object
                             if (mouseClick == 0)
                             {
+                                if (currentMO != null)
+                                {
+                                    currentMO.Display.ToggleDisplay(false);
+                                }
                                 currentMO = hitObject;
+                                currentMO.Display.ToggleDisplay(true);
                                 SelectedPanelUpdate(currentMO);
                                 
                             }
@@ -172,6 +185,13 @@ public class GameUIScript : MonoBehaviour {
                                 if (hitObject.Tag == "Factory")
                                 {
                                     if (currentMO.Tag == "Worker")
+                                    {
+                                        (currentMO as Worker).SetTask("deposit", hitObject);
+                                    }
+                                }
+                                else if (hitObject.Tag == "Base")
+                                {
+                                    if (currentMO.Tag == "Factory")
                                     {
                                         (currentMO as Worker).SetTask("deposit", hitObject);
                                     }
@@ -228,6 +248,11 @@ public class GameUIScript : MonoBehaviour {
                                 (currentMO as Worker).SetTask("deposit", mo);
                                 UICancelAction();
                             }
+                            else if (mo.Tag == "Base")
+                            {
+                                (currentMO as Worker).SetTask("deposit", mo);
+                                UICancelAction();
+                            }
                         }
                     }
                     #endregion
@@ -249,6 +274,16 @@ public class GameUIScript : MonoBehaviour {
                     switch (clickedAction)
                     {
                         case "factoryRally": factory.Spawn = pos; UICancelAction(); break;
+                    }
+                }
+                #endregion
+
+                #region base
+                if (currentMO.Tag == "Base")
+                {
+                    Base b = currentMO.GetComponent<Base>();
+                    switch(clickedAction){
+                        case "baseRally": b.Spawn = pos; UICancelAction(); break;
                     }
                 }
                 #endregion
@@ -473,7 +508,7 @@ public class GameUIScript : MonoBehaviour {
                 case "MassDeposit": selected_ResourceDeposit.SetActive(true); selected_ResourceDeposit.GetComponent<SelectedResource>().Selected(mo); break;
                 case "PowerPlant": selected_PowerPlant.SetActive(true); selected_PowerPlant.GetComponent<SelectedBuilding>().Selected(mo); action_Powerplant.SetActive(true); actionBar.SetActive(true); break;
                 case "Worker": selected_worker.SetActive(true); selected_worker.GetComponent<SelectedWorker>().Selected(mo); action_worker.SetActive(true); actionBar.SetActive(true);  break;
-                
+                case "Base": selected_Base.SetActive(true); selected_Base.GetComponent<SelectedBuilding>().Selected(mo); action_Base.SetActive(true); actionBar.SetActive(true); break;
                 
             }
             //set the name
@@ -582,11 +617,15 @@ public class GameUIScript : MonoBehaviour {
                 hts.Text_Clear(true);
                 
             }
-            else if (clickedAction == "factoryConstructWorker")
+            else if (clickedAction == "factoryConstructWorker" || clickedAction == "baseConstructWorker")
             {
                 if (currentMO.Tag == "Factory")
                 {
                     (currentMO as Factory).SpawnUnit(manager.GetPrefab("Worker"));
+                }
+                else if (currentMO.Tag == "Base")
+                {
+                    (currentMO as Base).SpawnUnit(manager.GetPrefab("Worker"));
                 }
             }
             else
