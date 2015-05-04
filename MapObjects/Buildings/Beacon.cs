@@ -19,7 +19,7 @@ public class Beacon : Building {
     
 	private void BeaconInit() {
 		BuildingInit();
-		light = GetComponent<LightObject>();
+		light = GetComponentInChildren<LightObject>();
     	tag = "Beacon";
     }
     
