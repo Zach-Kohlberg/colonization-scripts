@@ -7,8 +7,8 @@ public class Beacon : Building {
 	public float Radius {
 		get { return manager.Stat(tag+"Radius"); }
 	}
-	public float PowerRate {
-		get { return manager.Stat(tag+"PowerRate"); }
+	new public float PowerRate {
+		get { return (On)?manager.Stat(tag+"PowerRate"):0; }
 	}
 	
 	private void Awake() {
@@ -21,8 +21,8 @@ public class Beacon : Building {
     }
     
     private void Update() {
-		if (on) {
-			if (!manager.SpendMass(PowerRate*Time.deltaTime)) {
+		if (On) {
+			if (!manager.SpendMass(-PowerRate*Time.deltaTime)) {
 				//**Turn off beacon
 			}
         }

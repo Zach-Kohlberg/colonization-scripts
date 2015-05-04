@@ -17,11 +17,11 @@ public class Worker : Unit {
 	public float MaxMass {
 		get { return manager.Stat(tag+"MaxMass"); }
 	}
-	public float FoodRate {
-		get { return manager.Stat(tag+"FoodRate"); }
+	new public float FoodRate {
+		get { return (On)?manager.Stat(tag+"FoodRate"):0; }
 	}
 	public float MineRate {
-		get { return manager.Stat(tag+"MineRate"); }
+		get { return (On)?manager.Stat(tag+"MineRate"):0; }
 	}
     
     private void Awake() {
@@ -113,11 +113,11 @@ public class Worker : Unit {
 				SetTask("none", position);
 			}
     		else if (!Move()) {
-				if (targetObject.Tag == "Factory") {
-					(targetObject as Factory).DepositMass(mass);
+				if (deposit.Tag == "Factory") {
+					(deposit as Factory).DepositMass(mass);
 				}
 				else {
-					(targetObject as Base).DepositMass( mass );
+					(deposit as Base).DepositMass(mass);
 				}
 				mass = 0;
 				task = "mine";
@@ -134,11 +134,11 @@ public class Worker : Unit {
 				SetTask("none", position);
 			}
 			else if (!Move()) {
-				if (targetObject.Tag == "Factory") {
-					(targetObject as Factory).DepositMass(mass);
+				if (deposit.Tag == "Factory") {
+					(deposit as Factory).DepositMass(mass);
 				}
 				else {
-					(targetObject as Base).DepositMass( mass);
+					(deposit as Base).DepositMass(mass);
 				}
 				mass = 0;
 				SetTask("none", position);
@@ -163,7 +163,7 @@ public class Worker : Unit {
 			PerformTask();
             Debug.Log("Worker Update");
 			if (Time.time > lastTick + 1) {
-				if (!manager.SpendFood(FoodRate*Time.deltaTime)) {
+				if (!manager.SpendFood(-FoodRate*Time.deltaTime)) {
 					Kill();
 				}
 				lastTick++;

@@ -16,11 +16,11 @@ public class Base : Building {
 	public float Radius {
 		get { return manager.Stat(tag+"Radius"); }
 	}
-	public float PowerRate {
-		get { return manager.Stat(tag+"PowerRate"); }
+	new public float PowerRate {
+		get { return (On)?manager.Stat(tag+"PowerRate"):0; }
 	}
-	public float FoodRate {
-		get { return manager.Stat(tag+"FoodRate"); }
+	new public float FoodRate {
+		get { return (On)?manager.Stat(tag+"FoodRate"):0; }
 	}
 	new public bool On {
 		get { return on; }
@@ -58,7 +58,7 @@ public class Base : Building {
 	
 	private void Update() {
 		//**Tell fog of war to go away within a certain radius
-		if (!manager.SpendFood(FoodRate*Time.deltaTime) || !manager.SpendPower(PowerRate*Time.deltaTime)) {
+		if (!manager.SpendFood(-FoodRate*Time.deltaTime) || !manager.SpendPower(-PowerRate*Time.deltaTime)) {
 			//**You lose the game
 		}
 	}
