@@ -41,15 +41,35 @@ public class MapObject : MonoBehaviour {
 		set { transform.position = value; }
 	}
 	public float MassRate {
-		get { return 10000; }
+		get {
+			switch (tag) {
+				case "Farm": return (this as Farm).MassRate;
+				case "PowerPlant": return (this as PowerPlant).MassRate;
+				default: return 10000;
+			}
+		}
 	}
 	public float FoodRate {
-		get { return 10000; }
-	}
-	public float PowerRate {
-		get { return 10000; }
-	}
-	public SelectDisplay Display {
+		get {
+			switch (tag) {
+				case "Base": return (this as Base).FoodRate;
+				case "Farm": return (this as Farm).FoodRate;
+				case "Worker": return (this as Worker).FoodRate;
+                default: return 10000;
+            }
+        }
+    }
+    public float PowerRate {
+		get {
+			switch (tag) {
+				case "Base": return (this as Base).PowerRate;
+				case "Beacon": return (this as Beacon).PowerRate;
+				case "PowerPlant": return (this as PowerPlant).PowerRate;
+                default: return 10000;
+            }
+        }
+    }
+    public SelectDisplay Display {
 		get { return display; }
 	}
 	
@@ -80,7 +100,7 @@ public class MapObject : MonoBehaviour {
 		}
 		return "None";
 	}
-	
+    
 	//Destroy this map object and inform the manager
 	public virtual void Kill() {
 		manager.RemoveMapObject(this);
