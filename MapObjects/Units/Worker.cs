@@ -113,11 +113,11 @@ public class Worker : Unit {
 				SetTask("none", position);
 			}
     		else if (!Move()) {
-				if (targetObject.Tag == "Factory") {
-					(targetObject as Factory).DepositMass(mass);
+				if (deposit.Tag == "Factory") {
+					(deposit as Factory).DepositMass(mass);
 				}
 				else {
-					(targetObject as Base).DepositMass(mass);
+					(deposit as Base).DepositMass(mass);
 				}
 				mass = 0;
 				task = "mine";
@@ -134,11 +134,11 @@ public class Worker : Unit {
 				SetTask("none", position);
 			}
 			else if (!Move()) {
-				if (targetObject.Tag == "Factory") {
-					(targetObject as Factory).DepositMass(mass);
+				if (deposit.Tag == "Factory") {
+					(deposit as Factory).DepositMass(mass);
 				}
 				else {
-					(targetObject as Base).DepositMass(mass);
+					(deposit as Base).DepositMass(mass);
 				}
 				mass = 0;
 				SetTask("none", position);
