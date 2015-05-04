@@ -185,6 +185,7 @@ public class Manager : MonoBehaviour {
 	}
 	
 	public float Stat(string key) {
+        //Debug.Log("The Key: " + key + " The Stat: " + stats[key]);
 		if (stats.ContainsKey(key)) {
 			return stats[key];
 		}

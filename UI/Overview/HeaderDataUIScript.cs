@@ -36,7 +36,7 @@ public class HeaderDataUIScript : MonoBehaviour {
             {
                 change = "+" + ((int)amt).ToString();
             }
-            else if (amt <= 0)
+            else
             {
                 change = ((int)amt).ToString();
             }
@@ -49,10 +49,11 @@ public class HeaderDataUIScript : MonoBehaviour {
             {
                 change = "+" + ((int)amt).ToString();
             }
-            else if (amt <= 0)
+            else
             {
                 change = ((int)amt).ToString();
             }
+            Debug.Log(manager.GetTotalRate("Power").ToString());
 
             resourceFoodChange.text = change;
 
@@ -63,7 +64,7 @@ public class HeaderDataUIScript : MonoBehaviour {
             {
                 change = "+" + ((int)amt).ToString();
             }
-            else if (amt <= 0)
+            else
             {
                 change = ((int)amt).ToString();
             }
