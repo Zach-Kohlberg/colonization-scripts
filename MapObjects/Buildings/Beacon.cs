@@ -25,7 +25,7 @@ public class Beacon : Building {
     
     private void Update() {
 		if (On) {
-			if (!manager.SpendMass(-PowerRate*Time.deltaTime)) {
+			if (!manager.SpendPower(-PowerRate*Time.deltaTime)) {
 				On = false;
 				light.ShrinkLight();
 			}

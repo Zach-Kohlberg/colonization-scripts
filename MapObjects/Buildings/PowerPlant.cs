@@ -23,7 +23,7 @@ public class PowerPlant : Building {
     private void Update() {
 		if (on) {
 			if (manager.SpendMass(-MassRate*Time.deltaTime)) {
-				manager.AddFood(PowerRate*Time.deltaTime);
+				manager.AddPower(PowerRate*Time.deltaTime);
 			}
 		}
     }
