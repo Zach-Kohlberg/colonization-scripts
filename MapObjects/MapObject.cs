@@ -59,7 +59,7 @@ public class MapObject : MonoBehaviour {
 		z = 0;
 		manager = GameObject.Find("Manager").GetComponent<Manager>();
 		manager.AddMapObject(this);
-		display = GetComponent<SelectDisplay>();
+		display = GetComponentInChildren<SelectDisplay>();
 	}
 	
 	public static string TagType(string t) {
