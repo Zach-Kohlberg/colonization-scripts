@@ -13,7 +13,7 @@ public class GameUIScript : MonoBehaviour {
     public GameObject selectedPanel, actionBar, selected_worker, selected_Beacon, selected_Factory, selected_Farm, selected_PowerPlant, selected_ResourceDeposit, action_worker, action_Beacon, action_Factory, action_Farm, action_Powerplant;
     public Button action_CancelButton;//the button used to cancel an action
     public HoverTextScript hts;//the hovertext script
-    public GameObject prefabWorker, prefabBeacon, prefabFactory, prefabFarm, prefabPowerPlant;//these are the objects that will be built by units
+    //public GameObject prefabWorker, prefabBeacon, prefabFactory, prefabFarm, prefabPowerPlant;//these are the objects that will be built by units
 
     private List<GameObject> selectedMapObjectPanels, selectedActionBar;
     private Manager manager = null;
@@ -233,10 +233,10 @@ public class GameUIScript : MonoBehaviour {
                     #endregion
                     #region Build
                         switch(clickedAction){
-                            case "workerBuildBeacon": worker.Build(prefabBeacon, pos); UICancelAction(); break;
-                            case "workerBuildFactory": worker.Build(prefabFactory, pos); UICancelAction(); break;
-                            case "workerBuildFarm": worker.Build(prefabFarm, pos); UICancelAction(); break;
-                            case "workerBuildPowerPlant": worker.Build(prefabPowerPlant, pos); UICancelAction(); break;
+                            case "workerBuildBeacon": worker.Build(manager.GetPrefab("Beacon"), pos); UICancelAction(); break;
+                            case "workerBuildFactory": worker.Build(manager.GetPrefab("Factory"), pos); UICancelAction(); break;
+                            case "workerBuildFarm": worker.Build(manager.GetPrefab("Farm"), pos); UICancelAction(); break;
+                            case "workerBuildPowerPlant": worker.Build(manager.GetPrefab("PowerPlant"), pos); UICancelAction(); break;
                         }
                     
                     #endregion
@@ -586,7 +586,7 @@ public class GameUIScript : MonoBehaviour {
             {
                 if (currentMO.Tag == "Factory")
                 {
-                    (currentMO as Factory).SpawnUnit(prefabWorker);
+                    (currentMO as Factory).SpawnUnit(manager.GetPrefab("Worker"));
                 }
             }
             else
