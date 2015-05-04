@@ -117,7 +117,7 @@ public class Worker : Unit {
 					(targetObject as Factory).DepositMass(mass);
 				}
 				else {
-					(targetObject as Base).DepositMass(mass);
+					(targetObject as Base).DepositMass( mass );
 				}
 				mass = 0;
 				task = "mine";
@@ -138,7 +138,7 @@ public class Worker : Unit {
 					(targetObject as Factory).DepositMass(mass);
 				}
 				else {
-					(targetObject as Base).DepositMass(mass);
+					(targetObject as Base).DepositMass( mass);
 				}
 				mass = 0;
 				SetTask("none", position);

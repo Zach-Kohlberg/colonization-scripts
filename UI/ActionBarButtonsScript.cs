@@ -4,10 +4,11 @@ using UnityEngine.UI;
 
 public class ActionBarButtonsScript : MonoBehaviour {
 
-    public Text actionbarHoverText, costText;
+    public Text costText;
     public string mapobjectTag, actionBarTextInfo;
     //public GameObject buildingPrefab;
-    public bool building = false, worker = false;
+    public bool building = false, worker = false, cancelButton = false;
+    public HoverTextScript hts;
     private Manager manager;
 
     private float cost = 0;
@@ -52,7 +53,7 @@ public class ActionBarButtonsScript : MonoBehaviour {
     public void ActionBarMouseIn()
     {
         Debug.Log("Hovering");
-        actionbarHoverText.text = actionBarTextInfo;
+        hts.Text_Set(actionBarTextInfo);
         if (cost != 0)
         {
             costText.text = "Cost\n" + cost.ToString();
@@ -61,11 +62,21 @@ public class ActionBarButtonsScript : MonoBehaviour {
 
     public void ActionBarMouseOut()
     {
-        if (gameObject.GetComponent<Button>().interactable)
+        if (gameObject.GetComponent<Button>().interactable || cancelButton)
         {
-            actionbarHoverText.text = " ";
+            hts.Text_Clear();
             costText.text = " ";
         }
+       
         
+    }
+
+    /// <summary>
+    /// Return the hovertext
+    /// </summary>
+    /// <returns></returns>
+    public string ClickedHoverText()
+    {
+        return actionBarTextInfo;
     }
 }

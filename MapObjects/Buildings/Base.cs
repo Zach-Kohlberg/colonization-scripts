@@ -41,7 +41,7 @@ public class Base : Building {
 		//Do nothing, the base cannot be killed
 	}
 	
-	public void DepositMass(int amount) {
+	public void DepositMass(float amount) {
 		manager.AddMass(amount);
 	}
 	

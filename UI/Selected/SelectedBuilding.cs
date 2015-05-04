@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class SelectedBuilding : UISelected {
 
-    public Text resourceConsumption, resourceProduction; 
+    public Text resourceConsumption, resourceProduction, status; 
 
 	// Use this for initialization
 	void Start () {
@@ -48,5 +48,16 @@ public class SelectedBuilding : UISelected {
             //produce power
             resourceProduction.text = "+" + p.PowerRate.ToString();
         }
+
+        Debug.Log("The object is active and enabled: " + GetSelected().isActiveAndEnabled);
+        if (GetSelected().On)
+        {
+            status.text = "Active";
+        }
+        else
+        {
+            status.text = "Inactive";
+        }
+        
 	}
 }
