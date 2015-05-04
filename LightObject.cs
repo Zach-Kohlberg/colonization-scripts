@@ -2,15 +2,20 @@
 using System.Collections;
 
 public class LightObject : MonoBehaviour {
-	bool large = false;
+	bool large;
 	SphereCollider lightSphere;
 	Transform lightScale;
 	public float maxBounds, lowerBounds;
+	
+	public bool On {
+		get { return large; }
+	}
+	
 	// Use this for initialization
 	void Start() {
 		lightSphere = GetComponent<SphereCollider> ();
 		lightScale = gameObject.transform;
-
+		large = false;
 	}
 
 	void Update() {

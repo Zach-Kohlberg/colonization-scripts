@@ -3,6 +3,8 @@ using System.Collections;
 
 public class Beacon : Building {
 	
+	private LightObject light;
+	
 	//Public properties
 	public float Radius {
 		get { return manager.Stat(tag+"Radius"); }
@@ -17,14 +19,24 @@ public class Beacon : Building {
     
 	private void BeaconInit() {
 		BuildingInit();
+		light = GetComponent<LightObject>();
     	tag = "Beacon";
     }
     
     private void Update() {
 		if (On) {
 			if (!manager.SpendMass(-PowerRate*Time.deltaTime)) {
-				//**Turn off beacon
+				On = false;
+				light.ShrinkLight();
 			}
+			if (light.On) {
+				light.GrowLight();
+			}
+        }
+        else {
+        	if (!light.On) {
+        		light.ShrinkLight();
+        	}
         }
     }
 }
