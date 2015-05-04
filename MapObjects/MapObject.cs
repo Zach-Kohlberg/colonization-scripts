@@ -39,6 +39,15 @@ public class MapObject : MonoBehaviour {
 		get { return transform.position; }
 		set { transform.position = value; }
 	}
+	public float MassRate {
+		get { return 10000; }
+	}
+	public float FoodRate {
+		get { return 10000; }
+	}
+	public float PowerRate {
+		get { return 10000; }
+	}
 	
 	//Base init method for map objects
 	protected void MapObjectInit() {

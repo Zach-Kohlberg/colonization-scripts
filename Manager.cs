@@ -119,6 +119,35 @@ public class Manager : MonoBehaviour {
 		}
 	}
 	
+	//Return the total rate of production - consumption for a resource
+	public float GetTotalRate(string n) {
+		float r = 0;
+		switch (n) {
+			case "Mass":
+				foreach (MapObject m in mapObjectList) {
+					if (m.FoodRate < 9999) {
+						r += m.MassRate;
+					}
+				}
+			break;
+			case "Food":
+				foreach (MapObject m in mapObjectList) {
+					if (m.FoodRate < 9999) {
+						r += m.FoodRate;
+					}
+				}
+				break;
+			case "Power":
+				foreach (MapObject m in mapObjectList) {
+					if (m.FoodRate < 9999) {
+						r += m.PowerRate;
+					}
+				}
+				break;
+		}
+		return r;
+	}
+	
 	public void AddMass(float n) {
 		mass += n;
 	}

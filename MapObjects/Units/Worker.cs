@@ -17,11 +17,11 @@ public class Worker : Unit {
 	public float MaxMass {
 		get { return manager.Stat(tag+"MaxMass"); }
 	}
-	public float FoodRate {
-		get { return manager.Stat(tag+"FoodRate"); }
+	new public float FoodRate {
+		get { return (On)?manager.Stat(tag+"FoodRate"):0; }
 	}
 	public float MineRate {
-		get { return manager.Stat(tag+"MineRate"); }
+		get { return (On)?manager.Stat(tag+"MineRate"):0; }
 	}
     
     private void Awake() {
@@ -163,7 +163,7 @@ public class Worker : Unit {
 			PerformTask();
             Debug.Log("Worker Update");
 			if (Time.time > lastTick + 1) {
-				if (!manager.SpendFood(FoodRate*Time.deltaTime)) {
+				if (!manager.SpendFood(-FoodRate*Time.deltaTime)) {
 					Kill();
 				}
 				lastTick++;

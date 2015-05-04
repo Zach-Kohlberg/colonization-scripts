@@ -4,11 +4,11 @@ using System.Collections;
 public class Farm : Building {
     
 	//Public properties
-	public float MassRate {
-		get { return manager.Stat(tag+"MassRate"); }
+	new public float MassRate {
+		get { return (On)?manager.Stat(tag+"MassRate"):0; }
 	}
-	public float FoodRate {
-		get { return manager.Stat(tag+"FoodRate"); }
+	new public float FoodRate {
+		get { return (On)?manager.Stat(tag+"FoodRate"):0; }
     }
     
 	private void Awake() {
@@ -22,7 +22,7 @@ public class Farm : Building {
     
     private void Update() {
 		if (on) {
-			if (manager.SpendMass(MassRate*Time.deltaTime)) {
+			if (manager.SpendMass(-MassRate*Time.deltaTime)) {
 				manager.AddFood(FoodRate*Time.deltaTime);
 			}
 		}
