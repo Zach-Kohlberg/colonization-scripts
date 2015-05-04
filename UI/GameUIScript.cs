@@ -8,11 +8,14 @@ public class GameUIScript : MonoBehaviour {
     public string[] gameTags;//the tags that our objects use.
     public string[] uiActionNames;//the names of all the actions the UI controls.
     public float panSpeed = 2f;//how quickly should the camera move?
-    public Text selectedObjectNameType, header_Resource1Text, header_Resource2Text, header_Resource3Text;
+    public Text selectedObjectNameType;
     public Image selectedImage;
     public GameObject selectedPanel, actionBar, selected_worker, selected_Beacon, selected_Factory, selected_Farm, selected_PowerPlant, selected_ResourceDeposit, selected_Base, action_worker, action_Beacon, action_Factory, action_Farm, action_Powerplant, action_Base;
     public Button action_CancelButton;//the button used to cancel an action
     public HoverTextScript hts;//the hovertext script
+    public OverviewUIScript game_Overview;
+    public HeaderDataUIScript header_UI;
+
     //public GameObject prefabWorker, prefabBeacon, prefabFactory, prefabFarm, prefabPowerPlant;//these are the objects that will be built by units
 
     private List<GameObject> selectedMapObjectPanels, selectedActionBar;
@@ -59,16 +62,11 @@ public class GameUIScript : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
     {
-        if (manager != null)
-        {
-            header_Resource1Text.text = "Mass: " + (int) manager.Mass;
-			header_Resource2Text.text = "Food: " + (int) manager.Food;
-            header_Resource3Text.text = "Power: " + (int) manager.Power;
-            
-            //header_Resource3Text.text = "Eneger: " + manager.get
-        }
+        
         CameraMovement();
         PlayerInteractions();
+        game_Overview.OverviewUpdate();
+        header_UI.HeaderUpdate();
         //ActionButtons();
         //PlayerActions();
 	}
@@ -674,18 +672,7 @@ public class GameUIScript : MonoBehaviour {
 
 
 
-    /// <summary>
-    /// Accept information about the resources and display it to the player. Called from the manager.
-    /// </summary>
-    /// <param name="R1">Resource 1 amount</param>
-    /// <param name="R2">Resource 2 amount</param>
-    /// <param name="R3">Resource 3 amount</param>
-    public void UpdateResources(int R1 = 9999, int R2 = 9999, int R3 = 9999)
-    {
-        header_Resource1Text.text = R1.ToString();
-        header_Resource2Text.text = R2.ToString();
-        header_Resource3Text.text = R3.ToString();
-    }
+
 
 
     /// <summary>
