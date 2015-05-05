@@ -101,6 +101,42 @@ public class Manager : MonoBehaviour {
 		return l;
 	}
 	
+	//Enable/disable stuff based on proximity to active beacons
+	public void FogCheck() {
+		foreach (MapObject m in FilterType("Unit")) {
+			//Disable
+			foreach (MapObject b in FilterTag("Beacon")) {
+				if (b.On && Vector2.Distance(m.position, b.position) <= (b as Beacon).Radius) {
+					//Enable
+					break;
+				}
+			}
+			foreach (MapObject b in FilterTag("Base")) {
+				if (b.On && Vector2.Distance(m.position, b.position) <= (b as Base).Radius) {
+					//Enable
+					break;
+				}
+			}
+		}
+		foreach (MapObject m in FilterType("Building")) {
+			if (m.Tag != "Base" && m.Tag != "Beacon") {
+				//Disable
+				foreach (MapObject b in FilterTag("Beacon")) {
+					if (b.On && Vector2.Distance(m.position, b.position) <= (b as Beacon).Radius) {
+						//Enable
+						break;
+					}
+				}
+				foreach (MapObject b in FilterTag("Base")) {
+					if (b.On && Vector2.Distance(m.position, b.position) <= (b as Base).Radius) {
+						//Enable
+						break;
+					}
+				}
+			}
+		}
+	}
+	
 	//Return the cost to create a specific unit or building
 	public float GetCost(string tag) {
 		if (costs.ContainsKey(tag)) {
