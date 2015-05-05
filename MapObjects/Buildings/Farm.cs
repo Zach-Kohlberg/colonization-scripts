@@ -21,7 +21,7 @@ public class Farm : Building {
     }
     
     private void Update() {
-		if (on) {
+		if (On) {
 			if (manager.SpendMass(-MassRate*Time.deltaTime)) {
 				manager.AddFood(FoodRate*Time.deltaTime);
 			}

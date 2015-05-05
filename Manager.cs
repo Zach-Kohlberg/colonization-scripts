@@ -37,6 +37,8 @@ public class Manager : MonoBehaviour {
 	private Dictionary<string, GameObject> prefabs;
 	//Unit and building costs
 	private Dictionary<string, float> costs;
+	//Is the game still running?
+	private bool stillAlive;
 	
 	//Public properties
 	public float Food {
@@ -55,6 +57,10 @@ public class Manager : MonoBehaviour {
 		get { return points; }
 		set { points = value; }
 	}
+	public bool GameOver {
+		get { return !stillAlive; }
+		set { stillAlive = !value; }
+	}
 
     private void Awake() {
         ManagerInit();
@@ -64,6 +70,7 @@ public class Manager : MonoBehaviour {
 		food = initFood;
 		mass = initMass;
 		power = initPower;
+		stillAlive = true;
 		mapObjectList = new List<MapObject>();
 		stats = new Dictionary<string, float>();
 		foreach (Property p in initStats) {
@@ -102,34 +109,34 @@ public class Manager : MonoBehaviour {
 	}
 	
 	//Enable/disable stuff based on proximity to active beacons
-	public void FogCheck() {
+	public void CheckFog() {
 		foreach (MapObject m in FilterType("Unit")) {
-			//Disable
+			m.Fogged = true;
 			foreach (MapObject b in FilterTag("Beacon")) {
 				if (b.On && Vector2.Distance(m.position, b.position) <= (b as Beacon).Radius) {
-					//Enable
+					m.Fogged = false;
 					break;
 				}
 			}
 			foreach (MapObject b in FilterTag("Base")) {
 				if (b.On && Vector2.Distance(m.position, b.position) <= (b as Base).Radius) {
-					//Enable
+					m.Fogged = false;
 					break;
 				}
 			}
 		}
 		foreach (MapObject m in FilterType("Building")) {
 			if (m.Tag != "Base" && m.Tag != "Beacon") {
-				//Disable
+				m.Fogged = true;
 				foreach (MapObject b in FilterTag("Beacon")) {
 					if (b.On && Vector2.Distance(m.position, b.position) <= (b as Beacon).Radius) {
-						//Enable
+						m.Fogged = false;
 						break;
 					}
 				}
 				foreach (MapObject b in FilterTag("Base")) {
 					if (b.On && Vector2.Distance(m.position, b.position) <= (b as Base).Radius) {
-						//Enable
+						m.Fogged = false;
 						break;
 					}
 				}
@@ -238,5 +245,9 @@ public class Manager : MonoBehaviour {
 	
 	public void RemoveMapObject(MapObject m) {
 		mapObjectList.Remove(m);
+	}
+	
+	private void Update() {
+		CheckFog();
 	}
 }

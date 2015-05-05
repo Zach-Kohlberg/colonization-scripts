@@ -159,7 +159,7 @@ public class Worker : Unit {
     }
     
     private void Update() {
-    	if (on) {
+    	if (On) {
 			PerformTask();
             Debug.Log("Worker Update");
 			if (Time.time > lastTick + 1) {

@@ -19,10 +19,10 @@ public class LightObject : MonoBehaviour {
 	}
 
 	void Update() {
-		if (Input.GetKeyDown (KeyCode.F)) 
+		/*if (Input.GetKeyDown (KeyCode.F)) 
 			ShrinkLight ();
 		else if (Input.GetKeyDown (KeyCode.G))
-			GrowLight ();
+			GrowLight ();*/
 	}
 
 	public void GrowLight() {

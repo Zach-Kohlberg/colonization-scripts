@@ -21,7 +21,7 @@ public class PowerPlant : Building {
     }
     
     private void Update() {
-		if (on) {
+		if (On) {
 			if (manager.SpendMass(-MassRate*Time.deltaTime)) {
 				manager.AddPower(PowerRate*Time.deltaTime);
 			}

@@ -8,7 +8,7 @@ public class MapObject : MonoBehaviour {
 	
 	//Private fields
 	new protected string tag;
-	protected bool on;
+	protected bool on, fogged;
 	protected Manager manager;
 	protected SelectDisplay display;
 	
@@ -21,8 +21,12 @@ public class MapObject : MonoBehaviour {
 		get { return TagType(tag); }
 	}
 	public bool On {
-		get { return on; }
+		get { return on && !fogged; }
 		set { on = value; }
+	}
+	public bool Fogged {
+		get { return fogged; }
+		set { fogged = value; }
 	}
 	public float x {
 		get { return transform.position.x; }

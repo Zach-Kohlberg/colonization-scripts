@@ -6,6 +6,7 @@ using System.Collections.Generic;
 public class Base : Building {
 	
 	//Private fields
+	private LightObject light;
 	private Vector2 spawn;
 	
 	//Public properties
@@ -33,6 +34,7 @@ public class Base : Building {
 	
 	private void BaseInit() {
 		BuildingInit();
+		light = GetComponentInChildren<LightObject>();
 		tag = "Base";
 		spawn = position + new Vector3(1,0,0);
 	}
@@ -57,9 +59,8 @@ public class Base : Building {
 	}
 	
 	private void Update() {
-		//**Tell fog of war to go away within a certain radius
 		if (!manager.SpendFood(-FoodRate*Time.deltaTime) || !manager.SpendPower(-PowerRate*Time.deltaTime)) {
-			//**You lose the game
+			manager.GameOver = true;
 		}
 	}
 }

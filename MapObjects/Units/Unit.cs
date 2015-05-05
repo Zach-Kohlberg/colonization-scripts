@@ -62,7 +62,7 @@ public class Unit : MapObject {
     //Method for getting a point next to another map object
     protected Vector2 NextTo(Vector3 v) {
 		Vector2 pos = v - position;
-		return (Vector2)position + Vector2.ClampMagnitude(pos,pos.magnitude-0.5f);
+		return (Vector2)position + Vector2.ClampMagnitude(pos,pos.magnitude-2f);
     }
     
     //Unit-specific reaction to being given a task

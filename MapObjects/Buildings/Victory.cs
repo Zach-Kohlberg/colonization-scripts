@@ -21,7 +21,7 @@ public class Victory : Building {
 	}
 	
 	public void BuyPoints() {
-		if (manager.SpendMass(100)) {
+		if (On && manager.SpendMass(100)) {
 			manager.AddPoints(100);
 		}
 	}
