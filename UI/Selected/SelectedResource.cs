@@ -18,7 +18,7 @@ public class SelectedResource : UISelected {
         {
             if (GetSelected() != null)
             {
-                resourceAmountText.text = ((int) GetSelected().GetComponent<Resource>().Current).ToString() + " / " + GetSelected().GetComponent<Resource>().Max.ToString();
+                resourceAmountText.text = ((int) GetSelected().GetComponent<Resource>().Current).ToString() + "/" + GetSelected().GetComponent<Resource>().Max.ToString();
             }
 
         }

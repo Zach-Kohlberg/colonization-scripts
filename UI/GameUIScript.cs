@@ -8,11 +8,15 @@ public class GameUIScript : MonoBehaviour {
     public string[] gameTags;//the tags that our objects use.
     public string[] uiActionNames;//the names of all the actions the UI controls.
     public float panSpeed = 2f;//how quickly should the camera move?
-    public Text selectedObjectNameType, header_Resource1Text, header_Resource2Text, header_Resource3Text;
+    public Text selectedObjectNameType;
     public Image selectedImage;
-    public GameObject selectedPanel, actionBar, selected_worker, selected_Beacon, selected_Factory, selected_Farm, selected_PowerPlant, selected_ResourceDeposit, action_worker, action_Beacon, action_Factory, action_Farm, action_Powerplant;
+    public GameObject prefab_RallyPoint;//the prefab of the rally point
+    public GameObject selectedPanel, actionBar, selected_worker, selected_Beacon, selected_Victory, selected_Factory, selected_Farm, selected_PowerPlant, selected_ResourceDeposit, selected_Base, action_worker, action_Beacon, action_Factory, action_Farm, action_Powerplant, action_Base, action_Victory;
     public Button action_CancelButton;//the button used to cancel an action
     public HoverTextScript hts;//the hovertext script
+    public OverviewUIScript game_Overview;
+    public HeaderDataUIScript header_UI;
+
     //public GameObject prefabWorker, prefabBeacon, prefabFactory, prefabFarm, prefabPowerPlant;//these are the objects that will be built by units
 
     private List<GameObject> selectedMapObjectPanels, selectedActionBar;
@@ -30,6 +34,7 @@ public class GameUIScript : MonoBehaviour {
     private Dictionary<string, bool> uiActions;
     private bool insideUI = false, clickedUIActionButton = false, clickedWorkerActionButton = false;//is the player inside the UI? Did the player click a UI Action Button?
     private MapObject currentMO;//the mo the player is currently entranced with.
+    private GameObject rallypoint;
 
     void Awake()
     {
@@ -44,6 +49,8 @@ public class GameUIScript : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         LoadSelectedSprites();
+        rallypoint = Instantiate(prefab_RallyPoint) as GameObject;
+        rallypoint.SetActive(false);
 
         Debug.Log("Selected Images has a size of: " + selectedImages.Count);
 
@@ -52,26 +59,53 @@ public class GameUIScript : MonoBehaviour {
         selectedPanel.SetActive(false);
         selectedMapObjectPanels = new List<GameObject>();
         selectedActionBar = new List<GameObject>();
-        selectedMapObjectPanels.Add(selected_worker); selectedMapObjectPanels.Add(selected_Beacon); selectedMapObjectPanels.Add(selected_Factory); selectedMapObjectPanels.Add(selected_Farm); selectedMapObjectPanels.Add(selected_PowerPlant); selectedMapObjectPanels.Add(selected_ResourceDeposit);
-        selectedActionBar.Add(action_Beacon); selectedActionBar.Add(action_Factory); selectedActionBar.Add(action_Farm); selectedActionBar.Add(action_Powerplant); selectedActionBar.Add(action_worker);  
+        selectedMapObjectPanels.Add(selected_worker); selectedMapObjectPanels.Add(selected_Victory); selectedMapObjectPanels.Add(selected_Base); selectedMapObjectPanels.Add(selected_Beacon); selectedMapObjectPanels.Add(selected_Factory); selectedMapObjectPanels.Add(selected_Farm); selectedMapObjectPanels.Add(selected_PowerPlant); selectedMapObjectPanels.Add(selected_ResourceDeposit);
+        selectedActionBar.Add(action_Beacon); selectedActionBar.Add(action_Victory); selectedActionBar.Add(action_Factory); selectedActionBar.Add(action_Base); selectedActionBar.Add(action_Farm); selectedActionBar.Add(action_Powerplant); selectedActionBar.Add(action_worker);  
 	}
 	
 	// Update is called once per frame
 	void Update () 
     {
-        if (manager != null)
-        {
-            header_Resource1Text.text = "Mass: " + (int) manager.Mass;
-			header_Resource2Text.text = "Food: " + (int) manager.Food;
-            header_Resource3Text.text = "Power: " + (int) manager.Power;
-            
-            //header_Resource3Text.text = "Eneger: " + manager.get
-        }
+        
         CameraMovement();
         PlayerInteractions();
+        game_Overview.OverviewUpdate();
+        header_UI.HeaderUpdate();
+        RallyPointPlacement();
         //ActionButtons();
         //PlayerActions();
 	}
+
+    private void RallyPointPlacement()
+    {
+        Vector3 r_location = new Vector3(0,0,0);//the location we will place the rallypoint
+        bool isTrue = false;
+
+        if (currentMO != null)
+        {
+            if (currentMO.Tag == "Base")
+            {
+                r_location = (currentMO as Base).Spawn;
+                isTrue = true;
+            }
+            else if (currentMO.Tag == "Factory")
+            {
+                r_location = (currentMO as Factory).Spawn;
+                isTrue = true;
+            }
+
+            if (isTrue)
+            {
+                rallypoint.transform.position = r_location;
+                rallypoint.SetActive(true);
+            }
+            else
+            {
+                rallypoint.SetActive(false);
+            }
+        }
+        
+    }
 
 
     /// <summary>
@@ -109,6 +143,10 @@ public class GameUIScript : MonoBehaviour {
                         //if it was a left click, keep/make it null
                         if (mouseClick == 0)
                         {
+                            if (currentMO != null && currentMO.Display != null)
+                            {
+                                currentMO.Display.ToggleDisplay(false);
+                            }
                             currentMO = null;
                             //update the panel and actionbar.
                             SelectedPanelUpdate();
@@ -132,6 +170,10 @@ public class GameUIScript : MonoBehaviour {
                                     //set the spawn position of the factory
                                     currentMO.GetComponent<Factory>().Spawn = position;
                                 }
+                                else if (currentMO.Tag == "Base")
+                                {
+                                    currentMO.GetComponent<Base>().Spawn = position;
+                                }
                             }
 
                         }
@@ -151,7 +193,17 @@ public class GameUIScript : MonoBehaviour {
                             //if it was a left click, change the selected object
                             if (mouseClick == 0)
                             {
+                                if (currentMO != null && currentMO.Display != null)
+                                {
+                                    Debug.Log(currentMO.Display);
+                                    currentMO.Display.ToggleDisplay(false);
+                                }
                                 currentMO = hitObject;
+                                Debug.Log(currentMO.Display);
+                                if (currentMO.Display != null)
+                                {
+                                    currentMO.Display.ToggleDisplay(true);
+                                }
                                 SelectedPanelUpdate(currentMO);
                                 
                             }
@@ -172,6 +224,13 @@ public class GameUIScript : MonoBehaviour {
                                 if (hitObject.Tag == "Factory")
                                 {
                                     if (currentMO.Tag == "Worker")
+                                    {
+                                        (currentMO as Worker).SetTask("deposit", hitObject);
+                                    }
+                                }
+                                else if (hitObject.Tag == "Base")
+                                {
+                                    if (currentMO.Tag == "Factory")
                                     {
                                         (currentMO as Worker).SetTask("deposit", hitObject);
                                     }
@@ -228,6 +287,11 @@ public class GameUIScript : MonoBehaviour {
                                 (currentMO as Worker).SetTask("deposit", mo);
                                 UICancelAction();
                             }
+                            else if (mo.Tag == "Base")
+                            {
+                                (currentMO as Worker).SetTask("deposit", mo);
+                                UICancelAction();
+                            }
                         }
                     }
                     #endregion
@@ -237,6 +301,7 @@ public class GameUIScript : MonoBehaviour {
                             case "workerBuildFactory": worker.Build(manager.GetPrefab("Factory"), pos); UICancelAction(); break;
                             case "workerBuildFarm": worker.Build(manager.GetPrefab("Farm"), pos); UICancelAction(); break;
                             case "workerBuildPowerPlant": worker.Build(manager.GetPrefab("PowerPlant"), pos); UICancelAction(); break;
+                            case "workerBuildVictory": worker.Build(manager.GetPrefab("Victory"), pos); UICancelAction(); break;
                         }
                     
                     #endregion
@@ -249,6 +314,16 @@ public class GameUIScript : MonoBehaviour {
                     switch (clickedAction)
                     {
                         case "factoryRally": factory.Spawn = pos; UICancelAction(); break;
+                    }
+                }
+                #endregion
+
+                #region base
+                if (currentMO.Tag == "Base")
+                {
+                    Base b = currentMO.GetComponent<Base>();
+                    switch(clickedAction){
+                        case "baseRally": b.Spawn = pos; UICancelAction(); break;
                     }
                 }
                 #endregion
@@ -473,8 +548,8 @@ public class GameUIScript : MonoBehaviour {
                 case "MassDeposit": selected_ResourceDeposit.SetActive(true); selected_ResourceDeposit.GetComponent<SelectedResource>().Selected(mo); break;
                 case "PowerPlant": selected_PowerPlant.SetActive(true); selected_PowerPlant.GetComponent<SelectedBuilding>().Selected(mo); action_Powerplant.SetActive(true); actionBar.SetActive(true); break;
                 case "Worker": selected_worker.SetActive(true); selected_worker.GetComponent<SelectedWorker>().Selected(mo); action_worker.SetActive(true); actionBar.SetActive(true);  break;
-                
-                
+                case "Base": selected_Base.SetActive(true); selected_Base.GetComponent<SelectedBuilding>().Selected(mo); action_Base.SetActive(true); actionBar.SetActive(true); break;
+                case "Victory": selected_Victory.SetActive(true); selected_Victory.GetComponent<SelectedBuilding>().Selected(mo); action_Victory.SetActive(true); actionBar.SetActive(true); break;
             }
             //set the name
             selectedObjectNameType.text = mo.Tag;
@@ -575,6 +650,13 @@ public class GameUIScript : MonoBehaviour {
 
                 }
             }
+            else if (clickedAction == "victoryPoints")
+            {
+                if (currentMO.Tag == "Victory")
+                {
+                    (currentMO as Victory).BuyPoints();
+                }
+            }
             else if (clickedAction == "Cancel")
             {
 
@@ -582,11 +664,15 @@ public class GameUIScript : MonoBehaviour {
                 hts.Text_Clear(true);
                 
             }
-            else if (clickedAction == "factoryConstructWorker")
+            else if (clickedAction == "factoryConstructWorker" || clickedAction == "baseConstructWorker")
             {
                 if (currentMO.Tag == "Factory")
                 {
                     (currentMO as Factory).SpawnUnit(manager.GetPrefab("Worker"));
+                }
+                else if (currentMO.Tag == "Base")
+                {
+                    (currentMO as Base).SpawnUnit(manager.GetPrefab("Worker"));
                 }
             }
             else
@@ -635,18 +721,7 @@ public class GameUIScript : MonoBehaviour {
 
 
 
-    /// <summary>
-    /// Accept information about the resources and display it to the player. Called from the manager.
-    /// </summary>
-    /// <param name="R1">Resource 1 amount</param>
-    /// <param name="R2">Resource 2 amount</param>
-    /// <param name="R3">Resource 3 amount</param>
-    public void UpdateResources(int R1 = 9999, int R2 = 9999, int R3 = 9999)
-    {
-        header_Resource1Text.text = R1.ToString();
-        header_Resource2Text.text = R2.ToString();
-        header_Resource3Text.text = R3.ToString();
-    }
+
 
 
     /// <summary>

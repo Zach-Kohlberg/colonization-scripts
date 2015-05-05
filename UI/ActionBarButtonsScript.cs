@@ -7,7 +7,7 @@ public class ActionBarButtonsScript : MonoBehaviour {
     public Text costText;
     public string mapobjectTag, actionBarTextInfo;
     //public GameObject buildingPrefab;
-    public bool building = false, worker = false, cancelButton = false;
+    public bool building = false, worker = false, cancelButton = false, points = false;
     public HoverTextScript hts;
     private Manager manager;
 
@@ -33,11 +33,28 @@ public class ActionBarButtonsScript : MonoBehaviour {
             Debug.Log("worker is not null");
             cost = manager.GetCost(mapobjectTag);
         }
+        if (points)
+        {
+            Debug.Log("victory is not null");
+            cost = 100;
+        }
 	}
 	
 	// Update is called once per frame
 	void Update () {
         if (building || worker)
+        {
+            if (manager.Mass < cost)
+            {
+                gameObject.GetComponent<Button>().interactable = false;
+            }
+            else
+            {
+                gameObject.GetComponent<Button>().interactable = true;
+            }
+        }
+
+        if (points)
         {
             if (manager.Mass < cost)
             {

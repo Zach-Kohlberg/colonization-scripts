@@ -48,6 +48,18 @@ public class SelectedBuilding : UISelected {
             //produce power
             resourceProduction.text = "+" + p.PowerRate.ToString();
         }
+        else if (GetSelected().Tag == "Base")
+        {
+            Base b = GetSelected().GetComponent<Base>();
+            //consuming food
+            resourceConsumption.text = b.FoodRate.ToString();
+            //consuming power
+            resourceProduction.text = b.PowerRate.ToString();
+        }
+        else if (GetSelected().Tag == "Victory")
+        {
+            //do nothing.
+        }
 
         Debug.Log("The object is active and enabled: " + GetSelected().isActiveAndEnabled);
         if (GetSelected().On)
