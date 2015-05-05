@@ -56,6 +56,10 @@ public class SelectedBuilding : UISelected {
             //consuming power
             resourceProduction.text = b.PowerRate.ToString();
         }
+        else if (GetSelected().Tag == "Victory")
+        {
+            //do nothing.
+        }
 
         Debug.Log("The object is active and enabled: " + GetSelected().isActiveAndEnabled);
         if (GetSelected().On)

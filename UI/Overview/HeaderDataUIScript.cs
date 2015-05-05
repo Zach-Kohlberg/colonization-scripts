@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class HeaderDataUIScript : MonoBehaviour {
 
     private Manager manager;
-    public Text resourceMassAmount, resourceMassChange, resourceFoodAmount, resourceFoodChange, resourcePowerAmount, resourcePowerChange;
+    public Text resourceMassAmount, resourceMassChange, resourceFoodAmount, resourceFoodChange, resourcePowerAmount, resourcePowerChange, resourcePointsAmount;
 
 	// Use this for initialization
 	void Start () {
@@ -69,6 +69,9 @@ public class HeaderDataUIScript : MonoBehaviour {
                 change = (amt).ToString("F2");
             }
             resourcePowerChange.text = change;
+
+            //points
+            resourcePointsAmount.text = manager.Points.ToString();
         }
     }
 }
