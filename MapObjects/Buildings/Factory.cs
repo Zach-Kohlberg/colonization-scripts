@@ -21,7 +21,7 @@ public class Factory : Building {
 	private void FactoryInit() {
 		BuildingInit();
     	tag = "Factory";
-    	spawn = position + new Vector3(1,0,0);
+    	spawn = position + new Vector3(4,0,0);
     }
     
     public void DepositMass(float amount) {
