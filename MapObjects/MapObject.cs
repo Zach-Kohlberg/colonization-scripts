@@ -4,7 +4,7 @@ using System.Collections;
 public class MapObject : MonoBehaviour {
 	
 	//Static fields
-	protected static readonly string[] resources = {"MassDeposit"}, units = {"Worker"}, buildings = {"Base", "Factory", "Beacon", "PowerPlant", "Farm"};
+	protected static readonly string[] resources = {"MassDeposit"}, units = {"Worker"}, buildings = {"Base", "Factory", "Beacon", "PowerPlant", "Farm", "Victory"};
 	
 	//Private fields
 	new protected string tag;

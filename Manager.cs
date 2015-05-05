@@ -28,6 +28,7 @@ public class Manager : MonoBehaviour {
 	
 	//Resources
 	private float food, power, mass;
+	private int points;
 	//Add objects in the game
 	private List<MapObject> mapObjectList;
 	//Map object stats
@@ -50,9 +51,12 @@ public class Manager : MonoBehaviour {
 		get { return power; }
 		set { power = value; }
 	}
+	public int Points {
+		get { return points; }
+		set { points = value; }
+	}
 
-    private void Awake()
-    {
+    private void Awake() {
         ManagerInit();
     }
 
@@ -152,6 +156,10 @@ public class Manager : MonoBehaviour {
 	
 	public void AddPower(float n) {
 		power += n;
+	}
+	
+	public void AddPoints(int n) {
+		points += n;
 	}
 	
 	public bool SpendMass(float n) {
