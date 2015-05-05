@@ -159,9 +159,11 @@ public class GameUIScript : MonoBehaviour {
                             {
                                 if (currentMO != null)
                                 {
+                                    Debug.Log(currentMO.Display);
                                     currentMO.Display.ToggleDisplay(false);
                                 }
                                 currentMO = hitObject;
+                                Debug.Log(currentMO.Display);
                                 currentMO.Display.ToggleDisplay(true);
                                 SelectedPanelUpdate(currentMO);
                                 

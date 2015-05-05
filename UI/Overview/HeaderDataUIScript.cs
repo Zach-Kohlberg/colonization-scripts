@@ -34,11 +34,11 @@ public class HeaderDataUIScript : MonoBehaviour {
             resourceMassAmount.text = ((int)manager.Mass).ToString();
             if (amt > 0)
             {
-                change = "+" + ((int)amt).ToString();
+                change = "+" + (amt).ToString("F2");
             }
             else
             {
-                change = ((int)amt).ToString();
+                change = (amt).ToString("F2");
             }
             resourceMassChange.text = change;
 
@@ -47,11 +47,11 @@ public class HeaderDataUIScript : MonoBehaviour {
             amt = manager.GetTotalRate("Food");
             if (amt > 0)
             {
-                change = "+" + ((int)amt).ToString();
+                change = "+" + (amt).ToString("F2");
             }
             else
             {
-                change = ((int)amt).ToString();
+                change = (amt).ToString("F2");
             }
             Debug.Log(manager.GetTotalRate("Power").ToString());
 
@@ -62,11 +62,11 @@ public class HeaderDataUIScript : MonoBehaviour {
             amt = manager.GetTotalRate("Power");
             if (amt > 0)
             {
-                change = "+" + ((int)amt).ToString();
+                change = "+" + (amt).ToString("F2");
             }
             else
             {
-                change = ((int)amt).ToString();
+                change = (amt).ToString("F2");
             }
             resourcePowerChange.text = change;
         }
